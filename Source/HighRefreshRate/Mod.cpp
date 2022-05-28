@@ -1,5 +1,5 @@
 // TODO: Make this rely on sigscanning instead.
-HOOK(void, __fastcall, _SetFramerate, 0x1405FB7C0)
+HOOK(void, __fastcall, _SetFramerate, 0x1402B6EF0)
 {
 	original_SetFramerate();
 
