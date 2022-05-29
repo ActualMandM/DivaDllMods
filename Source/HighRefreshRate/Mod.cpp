@@ -26,7 +26,7 @@ extern "C" __declspec(dllexport) void Init()
 	Config::init();
 
 	uint8_t* instrAddr = (uint8_t*)sigSetFramerate() + 0x250;
-	vsyncAddr = (bool*)(instrAddr + readUnalignedU32(instrAddr + 0x1) + 0x6);
+	vsyncAddr = (bool*)(instrAddr + readUnalignedU32(instrAddr + 0x2) + 0x6);
 	instrAddr += 0x6;
 	capAddr = (uint32_t*)(instrAddr + readUnalignedU32(instrAddr + 0x2) + 0xA);
 
