@@ -3,10 +3,12 @@
   <ItemGroup>
     <ClInclude Include="Helpers.h" />
     <ClInclude Include="Pch.h" />
+    <ClInclude Include="Config.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DllMain.cpp" />
     <ClCompile Include="Pch.cpp" />
     <ClCompile Include="Mod.cpp" />
+    <ClCompile Include="Config.cpp" />
   </ItemGroup>
 </Project>
