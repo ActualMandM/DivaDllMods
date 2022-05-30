@@ -19,7 +19,7 @@ bool Config::init()
     }
 
 	enableVSync = config["vsync"].value_or(true);
-	framerateCap = config["framerate"].value_or(120);
+	framerateCap = config["framerate"].value_or(0);
 
     return true;
 }

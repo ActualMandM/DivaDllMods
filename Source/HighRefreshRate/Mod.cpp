@@ -14,8 +14,6 @@ SIG_SCAN
 // v1.0.0: 0x1402B6EF0
 HOOK(void, __fastcall, _SetFramerate, (char*)sigSetFramerate() + 0x250)
 {
-	original_SetFramerate();
-
 	// v1.0.0: 0x1414B2A74 and 0x1414B2A78
 	*(bool*)vsyncAddr = Config::enableVSync;
 	*(uint32_t*)capAddr = Config::framerateCap;

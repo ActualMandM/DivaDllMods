@@ -51,6 +51,7 @@ inline void* sigScan(const char* signature, const char* mask)
             for (int i = 0; i < _countof(x##Data); i += 2) \
             { \
                 x##Addr = sigScan(x##Data[i], x##Data[i + 1]); \
+                printf("[Signature] %s received: 0x%08x\n", #x, x##Addr); \
                 if (x##Addr) \
                     return x##Addr; \
             } \
