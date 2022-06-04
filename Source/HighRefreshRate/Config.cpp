@@ -21,7 +21,7 @@ bool Config::init()
 
 	enableVSync = config["vsync"].value_or(true);
 	framerateCap = config["framerate"].value_or(0);
-	multiThreaded = config["mt"].value_or(false);
+	multiThreaded = config["mt"].value_or(true);
 
     return true;
 }
