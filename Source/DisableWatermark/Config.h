@@ -4,7 +4,7 @@ class Config
 {
 	public:
 		static bool pvMark;
-		static bool copyrightMark;
+		static uint8_t copyrightMark;
 	
 		static bool init();
 };
