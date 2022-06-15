@@ -2,9 +2,6 @@ char* acString;
 char* vbString;
 char* ftString;
 
-// this really should be a define but i'm lazy atm
-bool showSprite = false;
-
 // v1.0.0: 0x1406C9800
 SIG_SCAN
 (
@@ -43,9 +40,9 @@ extern "C" __declspec(dllexport) void Init()
 	instrAddr += 0x34;
 	ftString = (char*)(instrAddr + readUnalignedU32(instrAddr + 0x3) + 0x7);
 
-	printf("[Disable Watermarks] acString: 0x%08x\n", acString);
-	printf("[Disable Watermarks] vbString: 0x%08x\n", vbString);
-	printf("[Disable Watermarks] ftString: 0x%08x\n", ftString);
+	printf("[Sound Theme Name Changer] acString: 0x%08x\n", acString);
+	printf("[Sound Theme Name Changer] vbString: 0x%08x\n", vbString);
+	printf("[Sound Theme Name Changer] ftString: 0x%08x\n", ftString);
 
 	// Replace sound theme strings.
 	WRITE_MEMORY(acString, const char, "F/Arcade");
@@ -53,9 +50,8 @@ extern "C" __declspec(dllexport) void Init()
 	WRITE_MEMORY(ftString, const char, "DIVA X/FT");
 
 	// Prevent sound name menu sprite from showing.
-	if (!showSprite)
-	{
+	#if true
 		WRITE_MEMORY((uint8_t*)sigMainMenu() + 0x183, uint8_t, 0xEB, 0x78);
 		// WRITE_MEMORY((uint8_t*)sigOptions() + 0x95, uint8_t, 0xE9, 0x78, 0x00, 0x00, 0x00);
-	}
+	#endif
 }
