@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{2024204a-abc3-461e-9117-0e6db0007d81}</ProjectGuid>
-    <RootNamespace>BypassSaturationBlock</RootNamespace>
+    <RootNamespace>RestoreCutSongs</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
