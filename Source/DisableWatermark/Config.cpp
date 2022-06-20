@@ -2,6 +2,7 @@
 
 bool Config::pvMark;
 bool Config::copyrightMark;
+bool Config::hideLyrics;
 
 bool Config::init()
 {
@@ -20,6 +21,7 @@ bool Config::init()
 
 	pvMark = config["pv"].value_or(true);
 	copyrightMark = config["copyright"].value_or(true);
+	hideLyrics = config["lyrics"].value_or(true);
 
     return true;
 }
