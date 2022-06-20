@@ -1,7 +1,7 @@
 ﻿#include "Config.h"
 
 bool Config::pvMark;
-uint8_t Config::copyrightMark;
+bool Config::copyrightMark;
 
 bool Config::init()
 {
@@ -19,7 +19,7 @@ bool Config::init()
     }
 
 	pvMark = config["pv"].value_or(true);
-	copyrightMark = config["copyright"].value_or(1);
+	copyrightMark = config["copyright"].value_or(true);
 
     return true;
 }
