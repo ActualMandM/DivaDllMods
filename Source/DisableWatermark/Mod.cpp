@@ -57,14 +57,7 @@ HOOK(void, __fastcall, _SetGameMode, sigGameMode(), __int64 a1)
 {
 	original_SetGameMode(a1);
 
-	if (*pvMode)
-	{
-		WRITE_MEMORY((char*)sigLyrics() + 0x38, uint8_t, 0x01);
-	}
-	else
-	{
-		WRITE_MEMORY((char*)sigLyrics() + 0x38, uint8_t, 0x00);
-	}
+	WRITE_MEMORY((char*)sigLyrics() + 0x38, bool, *pvMode);
 }
 
 extern "C" __declspec(dllexport) void Init()
