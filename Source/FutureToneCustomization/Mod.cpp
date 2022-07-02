@@ -2,6 +2,10 @@
 // v1.01: 0x1412B7290
 bool* visualStyle;
 
+// v1.00: 0x1416EB758
+// v1.01: 0x1416E5748
+int32_t* defaultStyleValue;
+
 // v1.00: 0x1406888D0
 // v1.01: 0x140683430
 SIG_SCAN
@@ -20,6 +24,15 @@ SIG_SCAN
 	"xxxx?xxxx?xxxx?xxxxxxxxxx?????xxxxxxxxxxxxx????xxxxxxxxxxxxxxxxxxxx?????xxx????xx????????xxx????xxx????????xxx????xxx????xxx????xxx????x????xxx????x????xxx????x????xxx????x????x????xxx????xxxxxxx?????xxx?????xxxxxx?????xxxxxxx?????xxxxxxx?????xxxxxxx?????xxxxxxxxxxxxxxxxxxxxxxxxx????xxxxx????xxxxxxxxxx?????xxxxx?????xxxxxxxxxxxxx????xxxxxx????xxx????x????xxxx?xxxx?xxxx?xx????????xxxxxx"
 );
 
+// v1.00: 0x1404119F0
+// v1.01: 0x14040CDC0
+SIG_SCAN
+(
+	sigDefaultStyleValue,
+	"\x48\x89\x6C\x24\x00\x56\x48\x83\xEC\x20\x49\x8B\xF0\x48\x8B\xEA\x48\x3B\xCA\x74\x7D\x48\x89\x5C\x24\x00\x48\x8D\x59\x18\x48\x89\x7C\x24\x00\x49\x8D\x78\x28\x66\x0F\x1F\x84\x00\x00\x00\x00\x00\x8B\x43\xE8\x48\x8D\x53\xF0\x48\x8D\x4F\xE0\x89\x06\x48\x3B\xCA\x74\x12\x48\x83\x7B\x00\x00\x72\x03\x48\x8B\x12\x4C\x8B\x03\xE8\x00\x00\x00\x00\x48\x8D\x53\x10\x48\x3B\xFA\x74\x16\x48\x83\x7B\x00\x00\x72\x03\x48\x8B\x12\x4C\x8B\x43\x20\x48\x8B\xCF\xE8\x00\x00\x00\x00\x48\x83\xC3\x48\x48\x83\xC6\x48\x48\x83\xC7\x48\x48\x8D\x43\xE8\x48\x3B\xC5\x75\xA8\x48\x8B\x7C\x24\x00\x48\x8B\x5C\x24\x00\x48\x8B\x6C\x24\x00\x48\x8B\xC6\x48\x83\xC4\x20\x5E\xC3",
+	"xxxx?xxxxxxxxxxxxxxxxxxxx?xxxxxxxx?xxxxxxxxx????xxxxxxxxxxxxxxxxxxxxx??xxxxxxxxx????xxxxxxxxxxxx??xxxxxxxxxxxxx????xxxxxxxxxxxxxxxxxxxxxxxxx?xxxx?xxxx?xxxxxxxxx"
+);
+
 // v1.00: N/A
 // v1.01: 0x1401D62B0
 SIG_SCAN
@@ -33,9 +46,20 @@ extern "C" __declspec(dllexport) void Init()
 {
 	// v1.00: N/A
 	// v1.01: 0x1401D65F0
-	uint8_t* instrAddr = (uint8_t*)sigUnknown() + 0x340;
-	visualStyle = (bool*)(instrAddr + readUnalignedU32(instrAddr + 0x3) + 0x7);
-	printf("[Future Tone Customization] visualStyle: 0x%08x\n", visualStyle);
+	{
+		uint8_t* instrAddr = (uint8_t*)sigUnknown() + 0x340;
+		visualStyle = (bool*)(instrAddr + readUnalignedU32(instrAddr + 0x3) + 0x7);
+		printf("[Future Tone Customization] visualStyle: 0x%08x\n", visualStyle);
+	}
+
+	// v1.01: 0x140411A90
+	// v1.01: 0x14040CE60
+	{
+		uint8_t* instrAddr = (uint8_t*)sigDefaultStyleValue() + 0xA0;
+		defaultStyleValue = (int32_t*)(instrAddr + readUnalignedU32(instrAddr + 0x3) + 0x7);
+		defaultStyleValue -= 0x2;
+		printf("[Future Tone Customization] defaultStyleValue: 0x%08x\n", defaultStyleValue);
+	}
 }
 
 bool prevVisualStyle = (bool)-1;
@@ -55,6 +79,8 @@ extern "C" __declspec(dllexport) void OnFrame()
 			// v1.00: 0x14041011A
 			// v1.01: 0x14040B4EA
 			WRITE_MEMORY((uint8_t*)sigMenuStyleValue() + 0x17A, int32_t, -1);
+
+			WRITE_MEMORY(defaultStyleValue, int32_t, -1);
 		}
 		else
 		{
@@ -63,6 +89,8 @@ extern "C" __declspec(dllexport) void OnFrame()
 			WRITE_MEMORY((uint8_t*)sigCustomizationStyle() + 0x5C, uint8_t, 0x33, 0xD2);
 
 			WRITE_MEMORY((uint8_t*)sigMenuStyleValue() + 0x17A, int32_t, 0);
+
+			WRITE_MEMORY(defaultStyleValue, int32_t, 0);
 		}
 
 		prevVisualStyle = *visualStyle;
