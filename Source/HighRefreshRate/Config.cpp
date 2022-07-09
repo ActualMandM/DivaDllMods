@@ -4,6 +4,7 @@ bool Config::enableVSync;
 uint32_t Config::framerateCap;
 bool Config::affectMenus;
 bool Config::multiThreaded;
+bool Config::newLimiter;
 
 bool Config::init()
 {
@@ -24,6 +25,7 @@ bool Config::init()
 	framerateCap = config["framerate"].value_or(0);
 	affectMenus = config["menu"].value_or(false);
 	multiThreaded = config["mt"].value_or(true);
+	newLimiter = config["newlimiter"].value_or(true);
 
     return true;
 }

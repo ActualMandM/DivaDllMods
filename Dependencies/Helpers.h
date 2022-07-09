@@ -25,8 +25,8 @@ const HMODULE MODULE_HANDLE = GetModuleHandle(nullptr);
 	GetProcAddress(LoadLibrary(TEXT(libraryName)), procName)
 
 #define HOOK(returnType, callingConvention, functionName, location, ...) \
-	typedef returnType callingConvention functionName(__VA_ARGS__); \
-	functionName* original##functionName = (functionName*)(location); \
+	typedef returnType callingConvention _##functionName(__VA_ARGS__); \
+	_##functionName* original##functionName = (_##functionName*)(location); \
 	returnType callingConvention implOf##functionName(__VA_ARGS__)
 
 #define INSTALL_HOOK(functionName) \
@@ -87,6 +87,6 @@ const HMODULE MODULE_HANDLE = GetModuleHandle(nullptr);
 
 inline uint32_t readUnalignedU32(void* memory)
 {
-    uint8_t* p = (uint8_t*)memory;
-    return p[0] | (p[1] << 8) | (p[2] << 16) | (p[3] << 24);
+	uint8_t* p = (uint8_t*)memory;
+	return p[0] | (p[1] << 8) | (p[2] << 16) | (p[3] << 24);
 }

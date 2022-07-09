@@ -172,12 +172,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Config.h" />
+    <ClInclude Include="FrameLimiter.h" />
     <ClInclude Include="Helpers.h" />
     <ClInclude Include="Pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="DllMain.cpp" />
+    <ClCompile Include="FrameLimiter.cpp" />
     <ClCompile Include="Mod.cpp" />
     <ClCompile Include="Pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

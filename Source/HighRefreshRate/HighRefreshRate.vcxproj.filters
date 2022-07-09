@@ -4,11 +4,13 @@
     <ClInclude Include="Helpers.h" />
     <ClInclude Include="Pch.h" />
     <ClInclude Include="Config.h" />
+    <ClInclude Include="FrameLimiter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DllMain.cpp" />
     <ClCompile Include="Pch.cpp" />
     <ClCompile Include="Mod.cpp" />
     <ClCompile Include="Config.cpp" />
+    <ClCompile Include="FrameLimiter.cpp" />
   </ItemGroup>
 </Project>
