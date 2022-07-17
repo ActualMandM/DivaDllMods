@@ -1,5 +1,5 @@
-// v1.00: 0x14058584C
-// v1.01: 0x14058087C
+// v1.01: 0x140580870
+// v1.02: 0x140580634
 SIG_SCAN
 (
 	sigSaturationBlock1,
@@ -7,8 +7,8 @@ SIG_SCAN
 	"xxxxxxxx????xxxxxx"
 );
 
-// v1.00: 0x140586994
-// v1.01: 0x1405819C4
+// v1.01: 0x1405819BC
+// v1.02: 0x14058178C
 SIG_SCAN
 (
 	sigSaturationBlock2,
@@ -16,13 +16,13 @@ SIG_SCAN
 	"xxxxxxx?xxxxxx"
 );
 
-// v1.00: 0x140653680
 // v1.01: 0x14064E1E0
+// v1.02: 0x14064C980
 SIG_SCAN
 (
 	sigUploadSettingCheck,
-	"\x48\x83\xEC\x28\xC6\x02\x01\x4C\x8B\xCA\x41\xC6\x00\x01\x4C\x8B\xD1\xE8\x00\x00\x00\x00\x48\x8B\xC8\xE8\x00\x00\x00\x00\x80\x78\x01\x00\x74\x23\x49\x8B\xCA\xE8\x00\x00\x00\x00\x84\xC0\x74\x17\x49\x8B\x82\x00\x00\x00\x00\x83\x38\xFF\x75\x04\x41\xC6\x01\x00\xB0\x01\x48\x83\xC4\x28\xC3\x41\xC6\x01\x00\x32\xC0\x41\xC6\x00\x00\x48\x83\xC4\x28\xC3",
-	"xxxxxxxxxxxxxxxxxx????xxxx????xxxxxxxxxx????xxxxxxx????xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+	"\x48\x83\xEC\x28\xC6\x02\x01",
+	"xxxxxxx"
 );
 
 HOOK(char, __fastcall, _LeaderboardUpload, sigUploadSettingCheck())
