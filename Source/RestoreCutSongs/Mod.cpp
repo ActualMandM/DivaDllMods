@@ -3,6 +3,7 @@
 SIG_SCAN
 (
 	sigSaturationBlock1,
+	0x140580634,
 	"\x8D\x42\xBD\x83\xF8\x01\x0F\x86\x00\x00\x00\x00\x81\xFA\xCF\x00\x00\x00",
 	"xxxxxxxx????xxxxxx"
 );
@@ -12,6 +13,7 @@ SIG_SCAN
 SIG_SCAN
 (
 	sigSaturationBlock2,
+	0x14058178C,
 	"\x8D\x42\xBD\x83\xF8\x01\x76\x00\x81\xFA\xCF\x00\x00\x00",
 	"xxxxxxx?xxxxxx"
 );
@@ -21,6 +23,7 @@ SIG_SCAN
 SIG_SCAN
 (
 	sigUploadSettingCheck,
+	0x14064C980,
 	"\x48\x83\xEC\x28\xC6\x02\x01",
 	"xxxxxxx"
 );

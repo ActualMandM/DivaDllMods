@@ -4,58 +4,86 @@
 
 inline bool sigValid = true;
 
+inline void* sigScan(const char* signature, const char* mask, size_t sigSize, void* memory, const size_t memorySize)
+{
+	if (sigSize == 0)
+		sigSize = strlen(mask);
+
+	for (size_t i = 0; i < memorySize; i++)
+	{
+		char* currMemory = (char*)memory + i;
+
+		size_t j;
+		for (j = 0; j < sigSize; j++)
+		{
+			if (mask[j] != '?' && signature[j] != currMemory[j])
+				break;
+		}
+
+		if (j == sigSize)
+			return currMemory;
+	}
+
+	return nullptr;
+}
+
 inline MODULEINFO moduleInfo;
 
 inline const MODULEINFO& getModuleInfo()
 {
-    if (moduleInfo.SizeOfImage)
-        return moduleInfo;
+	if (moduleInfo.SizeOfImage)
+		return moduleInfo;
 
-    ZeroMemory(&moduleInfo, sizeof(MODULEINFO));
-    GetModuleInformation(GetCurrentProcess(), GetModuleHandle(nullptr), &moduleInfo, sizeof(MODULEINFO));
+	ZeroMemory(&moduleInfo, sizeof(MODULEINFO));
+	GetModuleInformation(GetCurrentProcess(), GetModuleHandle(nullptr), &moduleInfo, sizeof(MODULEINFO));
 
-    return moduleInfo;
+	return moduleInfo;
 }
 
-inline void* sigScan(const char* signature, const char* mask)
+inline void* sigScan(const char* signature, const char* mask, void* hint)
 {
-    const MODULEINFO& info = getModuleInfo();
-    const size_t length = strlen(mask);
+	const MODULEINFO& info = getModuleInfo();
+	const size_t sigSize = strlen(mask);
 
-    for (size_t i = 0; i < info.SizeOfImage; i++)
-    {
-        char* memory = (char*)info.lpBaseOfDll + i;
+	// Ensure hint address is within the process memory region so there are no crashes.
+	if ((hint >= info.lpBaseOfDll) && ((char*)hint + sigSize <= (char*)info.lpBaseOfDll + info.SizeOfImage))
+	{
+		void* result = sigScan(signature, mask, sigSize, hint, sigSize);
 
-        size_t j;
-        for (j = 0; j < length; j++)
-        {
-            if (mask[j] != '?' && signature[j] != memory[j])
-                break;
-        }
+		if (result)
+			return result;
+	}
 
-        if (j == length) 
-            return memory;
-    }
-
-    return nullptr;
+	return sigScan(signature, mask, sigSize, info.lpBaseOfDll, info.SizeOfImage);
 }
 
-#define SIG_SCAN(x, ...) \
-    void* x(); \
-    void* x##Addr = x(); \
-    void* x() \
-    { \
-        static const char* x##Data[] = { __VA_ARGS__ }; \
-        if (!x##Addr) \
-        { \
-            for (int i = 0; i < _countof(x##Data); i += 2) \
-            { \
-                x##Addr = sigScan(x##Data[i], x##Data[i + 1]); \
-                printf("[Signature] %s received: 0x%08x\n", #x, x##Addr); \
-                if (x##Addr) \
-                    return x##Addr; \
-            } \
-            sigValid = false; \
-        } \
-        return x##Addr; \
-    }
+#define SIG_SCAN(x, y, ...) \
+	void* x(); \
+	void* x##Addr = x(); \
+	void* x() \
+	{ \
+		constexpr const char* x##Data[] = { __VA_ARGS__ }; \
+		constexpr size_t x##Size = _countof(x##Data); \
+		if (!x##Addr) \
+		{ \
+			if constexpr (x##Size == 2) \
+			{ \
+				x##Addr = sigScan(x##Data[0], x##Data[1], (void*)(y)); \
+				printf("[Signature] %s received: 0x%08x\n", #x, x##Addr); \
+				if (x##Addr) \
+					return x##Addr; \
+			} \
+			else \
+			{ \
+				for (int i = 0; i < x##Size; i += 2) \
+				{ \
+					x##Addr = sigScan(x##Data[i], x##Data[i + 1], (void*)(y)); \
+					printf("[Signature] %s received: 0x%08x\n", #x, x##Addr); \
+					if (x##Addr) \
+						return x##Addr; \
+				} \
+			} \
+			sigValid = false; \
+		} \
+		return x##Addr; \
+	}

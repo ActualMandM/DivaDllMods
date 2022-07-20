@@ -18,6 +18,7 @@ static milliseconds frame_portion_ms = duration_cast<milliseconds>(frame_ratio) 
 SIG_SCAN
 (
 	sigFrameLimiter,
+	0x1402B6DB0,
 	"\x40\x53\x48\x83\xEC\x50\x80\x3D\x00\x00\x00\x00\x00",
 	"xxxxxxxx?????"
 );
