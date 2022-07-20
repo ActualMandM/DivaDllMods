@@ -76,23 +76,23 @@ extern "C" __declspec(dllexport) void OnFrame()
 		{
 			// v1.01: 0x140683479, 0x140683485, 0x14068348C
 			// v1.02: 0x140681BF9, 0x140681C05, 0x140681C0C
-			WRITE_MEMORY((uint8_t*)sigCustomizationStyle() + 0x49, uint8_t, 0xB2, 0x01);
-			WRITE_MEMORY((uint8_t*)sigCustomizationStyle() + 0x55, uint8_t, 0x33, 0xD2);
-			WRITE_MEMORY((uint8_t*)sigCustomizationStyle() + 0x5C, uint8_t, 0xB2, 0x01);
+			WRITE_MEMORY((char*)sigCustomizationStyle() + 0x49, uint8_t, 0xB2, 0x01);
+			WRITE_MEMORY((char*)sigCustomizationStyle() + 0x55, uint8_t, 0x33, 0xD2);
+			WRITE_MEMORY((char*)sigCustomizationStyle() + 0x5C, uint8_t, 0xB2, 0x01);
 
 			// v1.01: 0x14040B4EA
 			// v1.02: 0x14040B3EA
-			WRITE_MEMORY((uint8_t*)sigNPRArchive() + 0x17A, int32_t, -1);
+			WRITE_MEMORY((char*)sigNPRArchive() + 0x17A, int32_t, -1);
 
 			WRITE_MEMORY(style, int32_t, -1);
 		}
 		else
 		{
-			WRITE_MEMORY((uint8_t*)sigCustomizationStyle() + 0x49, uint8_t, 0x33, 0xD2);
-			WRITE_MEMORY((uint8_t*)sigCustomizationStyle() + 0x55, uint8_t, 0xB2, 0x01);
-			WRITE_MEMORY((uint8_t*)sigCustomizationStyle() + 0x5C, uint8_t, 0x33, 0xD2);
+			WRITE_MEMORY((char*)sigCustomizationStyle() + 0x49, uint8_t, 0x33, 0xD2);
+			WRITE_MEMORY((char*)sigCustomizationStyle() + 0x55, uint8_t, 0xB2, 0x01);
+			WRITE_MEMORY((char*)sigCustomizationStyle() + 0x5C, uint8_t, 0x33, 0xD2);
 
-			WRITE_MEMORY((uint8_t*)sigNPRArchive() + 0x17A, int32_t, 0);
+			WRITE_MEMORY((char*)sigNPRArchive() + 0x17A, int32_t, 0);
 
 			WRITE_MEMORY(style, int32_t, 0);
 		}
