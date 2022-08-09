@@ -5,6 +5,7 @@ uint32_t Config::framerateCap;
 bool Config::affectMenus;
 bool Config::multiThreaded;
 bool Config::newLimiter;
+bool Config::oldFullscreen;
 
 bool Config::init()
 {
@@ -26,6 +27,7 @@ bool Config::init()
 	affectMenus = config["menu"].value_or(false);
 	multiThreaded = config["mt"].value_or(true);
 	newLimiter = config["newlimiter"].value_or(true);
+	oldFullscreen = config["oldfullscreen"].value_or(false);
 
     return true;
 }

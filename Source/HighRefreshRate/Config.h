@@ -8,6 +8,7 @@ class Config
 		static bool affectMenus;
 		static bool multiThreaded;
 		static bool newLimiter;
+		static bool oldFullscreen;
 
 		static bool init();
 };

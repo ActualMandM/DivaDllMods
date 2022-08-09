@@ -96,6 +96,12 @@ extern "C" __declspec(dllexport) void Init()
 		WRITE_MEMORY(sigSingleThreadedFlags(), uint8_t, 0x45, 0x31, 0xC9, 0x90);
 	}
 
+	// Disable 60hz fullscreen limit.
+	if (!Config::oldFullscreen)
+	{
+		WRITE_MEMORY((char*)sigSingleThreadedFlags() + 0x15, uint8_t, 0);
+	}
+
 	INSTALL_HOOK(_SetFramerate);
 	INSTALL_HOOK(_SetFramerateInGame);
 
