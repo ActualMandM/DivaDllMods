@@ -79,7 +79,7 @@ extern "C" __declspec(dllexport) void Init()
 
 		uint8_t* instrAddr = (uint8_t*)sigGetPVMode() - 0x10;
 		pvMode = (bool*)(instrAddr + readUnalignedU32(instrAddr + 0x3) + 0x20);
-		printf("[Disable Watermarks] pvMode: 0x%08x\n", pvMode);
+		printf("[Disable Watermarks] pvMode: 0x%llx\n", pvMode);
 		INSTALL_HOOK(_SetGameMode);
 	}
 }

@@ -87,8 +87,8 @@ extern "C" __declspec(dllexport) void Init()
 	instrAddr += 0x6;
 	framerateCap = (uint32_t*)(instrAddr + readUnalignedU32(instrAddr + 0x2) + 0xA);
 
-	printf("[High Refresh Rate] vsync: 0x%08x\n", vsync);
-	printf("[High Refresh Rate] framerateCap: 0x%08x\n", framerateCap);
+	printf("[High Refresh Rate] vsync: 0x%llx\n", vsync);
+	printf("[High Refresh Rate] framerateCap: 0x%llx\n", framerateCap);
 
 	// Apply patches and install hooks.
 	if (Config::multiThreaded)

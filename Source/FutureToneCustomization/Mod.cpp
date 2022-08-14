@@ -53,7 +53,7 @@ extern "C" __declspec(dllexport) void Init()
 	{
 		uint8_t* instrAddr = (uint8_t*)sigVisualSetting() + 0x40;
 		visualSetting = (bool*)(instrAddr + readUnalignedU32(instrAddr + 0x3) + 0x7);
-		printf("[Future Tone Customization] visualSetting: 0x%08x\n", visualSetting);
+		printf("[Future Tone Customization] visualSetting: 0x%llx\n", visualSetting);
 	}
 
 	// v1.01: 0x14040CE60
@@ -62,7 +62,7 @@ extern "C" __declspec(dllexport) void Init()
 		uint8_t* instrAddr = (uint8_t*)sigStyle() + 0xA0;
 		style = (int32_t*)(instrAddr + readUnalignedU32(instrAddr + 0x3) + 0x7);
 		style -= 0x2;
-		printf("[Future Tone Customization] style: 0x%08x\n", style);
+		printf("[Future Tone Customization] style: 0x%llx\n", style);
 	}
 }
 
