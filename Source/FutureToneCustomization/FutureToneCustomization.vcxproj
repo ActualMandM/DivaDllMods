@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{2024204a-abc3-461e-9117-0e6db0007d81}</ProjectGuid>
+    <ProjectGuid>{269BA762-F9F6-41AC-9423-54C2C1CA4879}</ProjectGuid>
     <RootNamespace>FutureToneCustomization</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>

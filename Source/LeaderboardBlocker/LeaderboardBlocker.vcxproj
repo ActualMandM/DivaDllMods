@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{2024204a-abc3-461e-9117-0e6db0007d81}</ProjectGuid>
+    <ProjectGuid>{E23F83CA-E3F4-41D9-95BB-24CAC996A43F}</ProjectGuid>
     <RootNamespace>LeaderboardBlocker</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>

@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{2024204a-abc3-461e-9117-0e6db0007d81}</ProjectGuid>
+    <ProjectGuid>{8C8C8587-1234-4FE3-8F44-CEFE21A76F5E}</ProjectGuid>
     <RootNamespace>SoundThemeNameChanger</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
