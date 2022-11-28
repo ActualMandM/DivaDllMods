@@ -22,6 +22,16 @@ SIG_SCAN
 	"xxxxxxxxxx????xx?????"
 );
 
+// v1.01: 0x140602FB0
+// v1.02: 0x140601740
+SIG_SCAN
+(
+	sigScreenshot,
+	0x140601740,
+	"\x48\x89\x5C\x24\x00\x48\x89\x4C\x24\x00\x57\x48\x83\xEC\x20\x48\x8B\xD9\x48\x8D\x05\x00\x00\x00\x00\x48\x89\x01\x33\xFF\x89\x79\x08\x48\x89\x79\x10\x48\x89\x79\x18\x48\x83\xC1\x20",
+	"xxxx?xxxx?xxxxxxxxxxx????xxxxxxxxxxxxxxxxxxxx"
+);
+
 // v1.01: 0x1406F3E20
 // v1.02: 0x1406F2820
 SIG_SCAN
@@ -68,9 +78,13 @@ extern "C" __declspec(dllexport) void Init()
 		WRITE_MEMORY(sigPVMark(), uint8_t, 0x00);
 	}
 
-	if (Config::copyrightMark)
+	if (Config::copyrightMark == 1) // Redirect to disablewm.farc
 	{
 		WRITE_MEMORY(sigCopyright(), const char, "rom/disablewm.farc");
+	}
+	else if (Config::copyrightMark == 2) // Block game from overriding Steam screenshot
+	{
+		WRITE_MEMORY(sigScreenshot(), uint8_t, 0xC3);
 	}
 
 	if (Config::hideLyrics)

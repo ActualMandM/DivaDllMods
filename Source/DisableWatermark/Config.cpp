@@ -1,7 +1,7 @@
 ﻿#include "Config.h"
 
 bool Config::pvMark;
-bool Config::copyrightMark;
+uint8_t Config::copyrightMark;
 bool Config::hideLyrics;
 
 bool Config::init()
@@ -20,7 +20,7 @@ bool Config::init()
     }
 
 	pvMark = config["pv"].value_or(true);
-	copyrightMark = config["copyright"].value_or(true);
+	copyrightMark = config["copyright"].value_or(1);
 	hideLyrics = config["lyrics"].value_or(true);
 
     return true;
