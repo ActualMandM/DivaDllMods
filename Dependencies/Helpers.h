@@ -78,3 +78,8 @@ inline uint32_t readUnalignedU32(void* memory)
 	uint8_t* p = (uint8_t*)memory;
 	return p[0] | (p[1] << 8) | (p[2] << 16) | (p[3] << 24);
 }
+
+inline void versionWarning(LPCTSTR modName)
+{
+	MessageBox(nullptr, TEXT("Failed to initialize! Please make sure that the DivaMegaMix executable is from v1.02 and try again.\nMD5: 26D808A17CBE83717D6A09CA18A5BD4B"), modName, MB_ICONERROR);
+}

@@ -20,6 +20,12 @@ SIG_SCAN
 
 extern "C" __declspec(dllexport) void Init()
 {
+	if (!sigValid)
+	{
+		versionWarning(TEXT("Restore Cut Songs"));
+		return;
+	}
+
 	WRITE_MEMORY((char*)sigSaturationBlock1() + 0xC, uint8_t, 0xEB, 0x0A);
 	WRITE_MEMORY((char*)sigSaturationBlock2() + 0xC, uint8_t, 0xEB, 0x06);
 }

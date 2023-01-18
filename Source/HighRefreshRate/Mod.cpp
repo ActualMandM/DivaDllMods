@@ -62,6 +62,9 @@ uint32_t prevFramerateCap = 60;
 
 extern "C" __declspec(dllexport) void OnFrame()
 {
+	if (!sigValid)
+		return;
+
 	if (Config::newLimiter && prevFramerateCap != *framerateCap)
 	{
 		if (*framerateCap == 0)
@@ -79,6 +82,12 @@ extern "C" __declspec(dllexport) void OnFrame()
 
 extern "C" __declspec(dllexport) void Init()
 {
+	if (!sigValid)
+	{
+		versionWarning(TEXT("High Refresh Rate"));
+		return;
+	}
+
 	Config::init();
 
 	// Grab the vsync and framerate cap addresses.

@@ -48,6 +48,12 @@ SIG_SCAN
 
 extern "C" __declspec(dllexport) void Init()
 {
+	if (!sigValid)
+	{
+		versionWarning(TEXT("Future Tone Customization"));
+		return;
+	}
+
 	// v1.01: 0x1401D65F0
 	// v1.02: 0x1401D64E0
 	{
@@ -70,6 +76,9 @@ bool prevVisualSetting = (bool)-1;
 
 extern "C" __declspec(dllexport) void OnFrame()
 {
+	if (!sigValid)
+		return;
+
 	if (prevVisualSetting != *visualSetting)
 	{
 		if (*visualSetting)

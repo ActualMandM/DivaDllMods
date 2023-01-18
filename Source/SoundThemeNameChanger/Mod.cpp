@@ -24,6 +24,12 @@ SIG_SCAN(sigFutureToneUI, 0x140C879D8, "result_c_right\x00", "xxxxxxxxxxxxxxx");
 
 extern "C" __declspec(dllexport) void Init()
 {
+	if (!sigValid)
+	{
+		versionWarning(TEXT("Sound Theme Name Changer"));
+		return;
+	}
+
 	// Replace sound theme strings.
 	WRITE_MEMORY(sigArcade(), const char, "F/Arcade");
 	WRITE_MEMORY(sigArcadeVerB(), const char, "F2nd/AC Ver.B");

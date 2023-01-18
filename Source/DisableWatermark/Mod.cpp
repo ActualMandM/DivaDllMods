@@ -71,6 +71,12 @@ HOOK(void, __fastcall, _SetGameMode, sigGameMode(), __int64 a1)
 
 extern "C" __declspec(dllexport) void Init()
 {
+	if (!sigValid)
+	{
+		versionWarning(TEXT("Disable Watermark"));
+		return;
+	}
+
 	Config::init();
 
 	if (Config::pvMark)

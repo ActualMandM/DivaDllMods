@@ -16,5 +16,11 @@ HOOK(char, __fastcall, _LeaderboardUpload, sigUploadSettingCheck())
 
 extern "C" __declspec(dllexport) void Init()
 {
+	if (!sigValid)
+	{
+		versionWarning(TEXT("Leaderboard Blocker"));
+		return;
+	}
+
 	INSTALL_HOOK(_LeaderboardUpload);
 }
