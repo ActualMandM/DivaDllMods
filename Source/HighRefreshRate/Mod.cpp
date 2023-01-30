@@ -1,37 +1,33 @@
 #include "Config.h"
 #include "FrameLimiter.h"
 
-// v1.01: 0x1414ACA64, 0x1414ACA68
-// v1.02: 0x1414ABBB4, 0x1414ABBB8
+// v1.03: 0x1414ABBB4, 0x1414ABBB8
 bool* vsync;
 uint32_t* framerateCap;
 
-// v1.01: 0x1402C0CF6
 // v1.02: 0x1402C0BC6
 SIG_SCAN
 (
 	sigSingleThreadedFlags,
-	0x1402C0BC6,
+	0x1402C0BE6,
 	"\x41\x83\xC9\x08\xC7\x45\x00\x00\x00\x00\x00",
 	"xxxxxx?????"
 );
 
-// v1.01: 0x1402B7460
 // v1.02: 0x1402B7330
 SIG_SCAN
 (
 	sigSetFramerate,
-	0x1402B7330,
+	0x1402B7340,
 	"\x88\x0D\x00\x00\x00\x00\xC7\x05\x00\x00\x00\x00\x3C\x00\x00\x00",
 	"xx????xx????xxxx"
 );
 
-// v1.01: 0x1405F66C0
 // v1.02: 0x1405F4D90
 SIG_SCAN
 (
 	sigSetFramerateInGame,
-	0x1405F4D90,
+	0x1405F4DD0,
 	"\x40\x53\x48\x81\xEC\x00\x00\x00\x00\x48\x8B\x05\x00\x00\x00\x00\x48\x33\xC4\x48\x89\x84\x24\x00\x00\x00\x00\x48\x8B\xD9\x48\x8D\x4C\x24\x00\xE8\x00\x00\x00\x00\xE8\x00\x00\x00\x00\xFF\xC8",
 	"xxxxx????xxx????xxxxxxx????xxxxxxx?x????x????xx"
 );

@@ -1,9 +1,8 @@
-// v1.01: 0x14064E1E0
 // v1.02: 0x14064C980
 SIG_SCAN
 (
 	sigUploadSettingCheck,
-	0x14064C980,
+	0x14064CC40,
 	"\x48\x83\xEC\x28\xC6\x02\x01",
 	"xxxxxxx"
 );

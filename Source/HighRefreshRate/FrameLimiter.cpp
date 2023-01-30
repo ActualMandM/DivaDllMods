@@ -13,12 +13,11 @@ static auto frame_ratio = FrameRatio(1);
 static duration<double, std::milli> present_time = {};
 static milliseconds frame_portion_ms = duration_cast<milliseconds>(frame_ratio) - milliseconds(1);
 
-// v1.01: 0x1402B6ED0
 // v1.02: 0x1402B6DB0
 SIG_SCAN
 (
 	sigFrameLimiter,
-	0x1402B6DB0,
+	0x1402B6DC0,
 	"\x40\x53\x48\x83\xEC\x50\x80\x3D\x00\x00\x00\x00\x00",
 	"xxxxxxxx?????"
 );
