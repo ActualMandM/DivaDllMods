@@ -1,15 +1,11 @@
 #include "Config.h"
 
-// v1.03: 0x1416E2BA9
 bool* pvMode;
 
-// v1.02: 0x140C8B6C0
 SIG_SCAN(sigPVMark, 0x140C8B6D0, "pv_mark", "xxxxxxx");
 
-// v1.02: 0x140CBCF20
 SIG_SCAN(sigCopyright, 0x140CBCF10, "rom/copyright.farc", "xxxxxxxxxxxxxxxxxx");
 
-// v1.02: 0x140245350
 SIG_SCAN
 (
 	sigLyrics,
@@ -18,7 +14,6 @@ SIG_SCAN
 	"xxxxxxxxxx????xx?????"
 );
 
-// v1.02: 0x140601740
 SIG_SCAN
 (
 	sigScreenshot,
@@ -27,7 +22,6 @@ SIG_SCAN
 	"xxxx?xxxx?xxxxxxxxxxx????xxxxxxxxxxxxxxxxxxxx"
 );
 
-// v1.02: 0x1406F2820
 SIG_SCAN
 (
 	sigGameMode,
@@ -36,7 +30,6 @@ SIG_SCAN
 	"xxxx?xxxxxxxxxxx?xxx????xxx????xxxxxxxxxxxxxx?xxx????x????xx????xxxxxxxxxxxxxxx?"
 )
 
-// v1.02: 0x14040B270
 SIG_SCAN
 (
 	sigGetPVMode,
@@ -45,7 +38,6 @@ SIG_SCAN
 	"xxxx?xxxx?xxxx?xxxxxxxxxx?????xxxxxxxxxxxxx????xxxxxxxxxxxxxxxxxxxx?????"
 )
 
-// v1.02: 0x14065C520
 SIG_SCAN
 (
 	sigPhotoMode,

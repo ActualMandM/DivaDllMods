@@ -13,7 +13,6 @@ static auto frame_ratio = FrameRatio(1);
 static duration<double, std::milli> present_time = {};
 static milliseconds frame_portion_ms = duration_cast<milliseconds>(frame_ratio) - milliseconds(1);
 
-// v1.02: 0x1402B6DB0
 SIG_SCAN
 (
 	sigFrameLimiter,

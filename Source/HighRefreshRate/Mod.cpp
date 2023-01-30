@@ -1,11 +1,9 @@
 #include "Config.h"
 #include "FrameLimiter.h"
 
-// v1.03: 0x1414ABBB4, 0x1414ABBB8
 bool* vsync;
 uint32_t* framerateCap;
 
-// v1.02: 0x1402C0BC6
 SIG_SCAN
 (
 	sigSingleThreadedFlags,
@@ -14,7 +12,6 @@ SIG_SCAN
 	"xxxxxx?????"
 );
 
-// v1.02: 0x1402B7330
 SIG_SCAN
 (
 	sigSetFramerate,
@@ -23,7 +20,6 @@ SIG_SCAN
 	"xx????xx????xxxx"
 );
 
-// v1.02: 0x1405F4D90
 SIG_SCAN
 (
 	sigSetFramerateInGame,
@@ -46,8 +42,6 @@ HOOK(void, __fastcall, _SetFramerate, (char*)sigSetFramerate())
 	}
 }
 
-// v1.01: 0x1405F677E
-// v1.02: 0x1405F4E4E
 HOOK(void, __fastcall, _SetFramerateInGame, (char*)sigSetFramerateInGame() + 0xBE)
 {
 	*vsync = Config::enableVSync;

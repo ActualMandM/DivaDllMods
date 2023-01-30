@@ -1,10 +1,7 @@
-// v1.03: 0x1412B63E0
 bool* visualSetting;
 
-// v1.03: 0x1416E4898
 int32_t* style;
 
-// v1.02: 0x140681BB0
 SIG_SCAN
 (
 	sigCustomizationStyle,
@@ -13,7 +10,6 @@ SIG_SCAN
 	"xxxxx????xxx"
 );
 
-// v1.02: 0x14040B270
 SIG_SCAN
 (
 	sigNPRArchive,
@@ -22,7 +18,6 @@ SIG_SCAN
 	"xxxx?xxxx?xxxx?xxxxxxxxxx?????xxxxxxxxxxxxx????xxxxxxxxxxxxxxxxxxxx?????"
 );
 
-// v1.02: 0x14040CCC0
 SIG_SCAN
 (
 	sigStyle,
@@ -31,7 +26,6 @@ SIG_SCAN
 	"xxxx?xxxxxxxxxxxxxxxxxxxx?xxxxxxxx?xxxxxxxxx????"
 );
 
-// v1.02: 0x1401D64A0
 SIG_SCAN
 (
 	sigVisualSetting,
@@ -48,16 +42,12 @@ extern "C" __declspec(dllexport) void Init()
 		return;
 	}
 
-	// v1.01: 0x1401D65F0
-	// v1.02: 0x1401D64E0
 	{
 		uint8_t* instrAddr = (uint8_t*)sigVisualSetting() + 0x40;
 		visualSetting = (bool*)(instrAddr + readUnalignedU32(instrAddr + 0x3) + 0x7);
 		printf("[Future Tone Customization] visualSetting: 0x%llx\n", visualSetting);
 	}
 
-	// v1.01: 0x14040CE60
-	// v1.02: 0x14040CD60
 	{
 		uint8_t* instrAddr = (uint8_t*)sigStyle() + 0xA0;
 		style = (int32_t*)(instrAddr + readUnalignedU32(instrAddr + 0x3) + 0x7);
@@ -77,14 +67,10 @@ extern "C" __declspec(dllexport) void OnFrame()
 	{
 		if (*visualSetting)
 		{
-			// v1.01: 0x140683479, 0x140683485, 0x14068348C
-			// v1.02: 0x140681BF9, 0x140681C05, 0x140681C0C
 			WRITE_MEMORY((char*)sigCustomizationStyle() + 0x49, uint8_t, 0xB2, 0x01);
 			WRITE_MEMORY((char*)sigCustomizationStyle() + 0x55, uint8_t, 0x33, 0xD2);
 			WRITE_MEMORY((char*)sigCustomizationStyle() + 0x5C, uint8_t, 0xB2, 0x01);
 
-			// v1.01: 0x14040B4EA
-			// v1.02: 0x14040B3EA
 			WRITE_MEMORY((char*)sigNPRArchive() + 0x17A, int32_t, -1);
 
 			WRITE_MEMORY(style, int32_t, -1);

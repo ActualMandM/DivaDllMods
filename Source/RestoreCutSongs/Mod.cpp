@@ -1,4 +1,3 @@
-// v1.02: 0x140580634
 SIG_SCAN
 (
 	sigSaturationBlock1,
@@ -7,7 +6,6 @@ SIG_SCAN
 	"xxxxxxxx????xxxxxx"
 );
 
-// v1.02: 0x14058178C
 SIG_SCAN
 (
 	sigSaturationBlock2,

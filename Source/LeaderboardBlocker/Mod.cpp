@@ -1,4 +1,3 @@
-// v1.02: 0x14064C980
 SIG_SCAN
 (
 	sigUploadSettingCheck,
