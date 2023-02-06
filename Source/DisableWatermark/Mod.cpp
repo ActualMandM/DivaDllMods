@@ -68,13 +68,13 @@ extern "C" __declspec(dllexport) void Init()
 		WRITE_MEMORY(sigPVMark(), uint8_t, 0x00);
 	}
 
-	if (Config::copyrightMark == 1) // Redirect to disablewm.farc
-	{
-		WRITE_MEMORY(sigCopyright(), const char, "rom/disablewm.farc");
-	}
-	else if (Config::copyrightMark == 2) // Block game from overriding Steam screenshot
+	if (Config::copyrightMark == 1) // Block game from overriding Steam screenshot
 	{
 		WRITE_MEMORY(sigScreenshot(), uint8_t, 0xC3);
+	}
+	else if (Config::copyrightMark == 2) // Redirect to disablewm.farc
+	{
+		WRITE_MEMORY(sigCopyright(), const char, "rom/disablewm.farc");
 	}
 
 	if (Config::hideLyrics)
