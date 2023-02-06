@@ -24,10 +24,18 @@ SIG_SCAN
 
 SIG_SCAN
 (
-	sigGameMode,
+	sigGameModeNX,
 	0x1406F2AE0,
 	"\x48\x89\x5C\x24\x00\x55\x56\x57\x41\x54\x41\x55\x48\x8D\x6C\x24\x00\x48\x81\xEC\x00\x00\x00\x00\x48\x8B\x05\x00\x00\x00\x00\x48\x33\xC4\x48\x89\x45\x70\x48\x8B\xD9\x48\x89\x4C\x24\x00\x48\x8D\x0D\x00\x00\x00\x00\xE8\x00\x00\x00\x00\x41\xBC\x00\x00\x00\x00\x48\x8D\x55\xD8\x45\x8B\xC4\x4C\x8B\xE8\x66\x0F\x1F\x44\x00\x00",
 	"xxxx?xxxxxxxxxxx?xxx????xxx????xxxxxxxxxxxxxx?xxx????x????xx????xxxxxxxxxxxxxxx?"
+)
+
+SIG_SCAN
+(
+	sigGameModePS4,
+	0x140206810,
+	"\x48\x89\x5C\x24\x00\x48\x89\x74\x24\x00\x55\x57\x41\x54\x41\x56\x41\x57\x48\x8D\x6C\x24\x00\x48\x81\xEC\x00\x00\x00\x00\x48\x8B\x05\x00\x00\x00\x00\x48\x33\xC4\x48\x89\x45\x70\x4C\x8B\xD9\x48\x8D\x0D\x00\x00\x00\x00\xE8\x00\x00\x00\x00\x41\xBC\x00\x00\x00\x00\x48\x8D\x55\xD8\x45\x8B\xC4\x4C\x8B\xF8\x0F\x1F\x44\x00\x00",
+	"xxxx?xxxx?xxxxxxxxxxxx?xxx????xxx????xxxxxxxxxxxxx????x????xx????xxxxxxxxxxxxxx?"
 )
 
 SIG_SCAN
@@ -46,9 +54,16 @@ SIG_SCAN
 	"xxxxx????xxxxx"
 )
 
-HOOK(void, __fastcall, _SetGameMode, sigGameMode(), __int64 a1)
+HOOK(void, __fastcall, _SetGameModeNX, sigGameModeNX(), __int64 a1)
 {
-	original_SetGameMode(a1);
+	original_SetGameModeNX(a1);
+
+	WRITE_MEMORY((char*)sigLyrics() + 0x38, bool, *pvMode);
+}
+
+HOOK(void, __fastcall, _SetGameModePS4, sigGameModePS4(), __int64 a1)
+{
+	original_SetGameModePS4(a1);
 
 	WRITE_MEMORY((char*)sigLyrics() + 0x38, bool, *pvMode);
 }
@@ -84,6 +99,7 @@ extern "C" __declspec(dllexport) void Init()
 		uint8_t* instrAddr = (uint8_t*)sigGetPVMode() - 0x10;
 		pvMode = (bool*)(instrAddr + readUnalignedU32(instrAddr + 0x3) + 0x20);
 		printf("[Disable Watermarks] pvMode: 0x%llx\n", pvMode);
-		INSTALL_HOOK(_SetGameMode);
+		INSTALL_HOOK(_SetGameModeNX);
+		INSTALL_HOOK(_SetGameModePS4);
 	}
 }
