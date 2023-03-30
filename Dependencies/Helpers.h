@@ -30,12 +30,12 @@ const HMODULE MODULE_HANDLE = GetModuleHandle(nullptr);
 	returnType callingConvention implOf##functionName(__VA_ARGS__)
 
 #define INSTALL_HOOK(functionName) \
-	{ \
+	do { \
 		DetourTransactionBegin(); \
 		DetourUpdateThread(GetCurrentThread()); \
 		DetourAttach((void**)&original##functionName, implOf##functionName); \
 		DetourTransactionCommit(); \
-	}
+	} while(0)
 
 #define VTABLE_HOOK(returnType, callingConvention, className, functionName, ...) \
 	typedef returnType callingConvention className##functionName(className* This, __VA_ARGS__); \
@@ -43,35 +43,34 @@ const HMODULE MODULE_HANDLE = GetModuleHandle(nullptr);
 	returnType callingConvention implOf##className##functionName(className* This, __VA_ARGS__)
 
 #define INSTALL_VTABLE_HOOK(className, object, functionName, functionIndex) \
-	{ \
-		void** addr = &(*(void***)object)[functionIndex]; \
-		if (*addr != implOf##className##functionName) \
+	do { \
+		if (original##className##functionName == nullptr) \
 		{ \
-			original##className##functionName = (className##functionName*)*addr; \
-			DWORD oldProtect; \
-			VirtualProtect(addr, sizeof(void*), PAGE_EXECUTE_READWRITE, &oldProtect); \
-			*addr = implOf##className##functionName; \
-			VirtualProtect(addr, sizeof(void*), oldProtect, &oldProtect); \
+			original##className##functionName = (*(className##functionName***)object)[functionIndex]; \
+			DetourTransactionBegin(); \
+			DetourUpdateThread(GetCurrentThread()); \
+			DetourAttach((void**)&original##className##functionName, implOf##className##functionName); \
+			DetourTransactionCommit(); \
 		} \
-	}
+	} while(0)
 
 #define WRITE_MEMORY(location, type, ...) \
-	{ \
+	do { \
 		const type data[] = { __VA_ARGS__ }; \
 		DWORD oldProtect; \
 		VirtualProtect((void*)(location), sizeof(data), PAGE_EXECUTE_READWRITE, &oldProtect); \
 		memcpy((void*)(location), data, sizeof(data)); \
 		VirtualProtect((void*)(location), sizeof(data), oldProtect, &oldProtect); \
-	}
+	} while(0)
 
 #define WRITE_NOP(location, count) \
-	{ \
+	do { \
 		DWORD oldProtect; \
 		VirtualProtect((void*)(location), (size_t)(count), PAGE_EXECUTE_READWRITE, &oldProtect); \
 		for (size_t i = 0; i < (size_t)(count); i++) \
 			*((uint8_t*)(location) + i) = 0x90; \
 		VirtualProtect((void*)(location), (size_t)(count), oldProtect, &oldProtect); \
-	}
+	} while(0)
 
 inline uint32_t readUnalignedU32(void* memory)
 {
