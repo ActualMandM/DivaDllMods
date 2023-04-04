@@ -50,63 +50,66 @@ HOOK(void, __fastcall, _SetFramerateInGame, (char*)sigSetFramerateInGame() + 0xB
 
 uint32_t prevFramerateCap = 60;
 
-extern "C" __declspec(dllexport) void OnFrame()
+extern "C"
 {
-	if (!sigValid)
-		return;
-
-	if (Config::newLimiter && prevFramerateCap != *framerateCap)
+	__declspec(dllexport) void OnFrame()
 	{
-		if (*framerateCap == 0)
+		if (!sigValid)
+			return;
+
+		if (Config::newLimiter && prevFramerateCap != *framerateCap)
 		{
-			FrameLimiter::setCap(60, false);
+			if (*framerateCap == 0)
+			{
+				FrameLimiter::setCap(60, false);
+			}
+			else
+			{
+				FrameLimiter::setCap(*framerateCap, true);
+			}
+
+			prevFramerateCap = *framerateCap;
 		}
-		else
+	}
+
+	__declspec(dllexport) void Init()
+	{
+		if (!sigValid)
 		{
-			FrameLimiter::setCap(*framerateCap, true);
+			versionWarning(TEXT("High Refresh Rate"));
+			return;
 		}
 
-		prevFramerateCap = *framerateCap;
-	}
-}
+		Config::init();
 
-extern "C" __declspec(dllexport) void Init()
-{
-	if (!sigValid)
-	{
-		versionWarning(TEXT("High Refresh Rate"));
-		return;
-	}
+		// Grab the vsync and framerate cap addresses.
+		uint8_t* instrAddr = (uint8_t*)sigSetFramerate();
+		vsync = (bool*)(instrAddr + readUnalignedU32(instrAddr + 0x2) + 0x6);
+		instrAddr += 0x6;
+		framerateCap = (uint32_t*)(instrAddr + readUnalignedU32(instrAddr + 0x2) + 0xA);
 
-	Config::init();
+		printf("[High Refresh Rate] vsync: 0x%llx\n", vsync);
+		printf("[High Refresh Rate] framerateCap: 0x%llx\n", framerateCap);
 
-	// Grab the vsync and framerate cap addresses.
-	uint8_t* instrAddr = (uint8_t*)sigSetFramerate();
-	vsync = (bool*)(instrAddr + readUnalignedU32(instrAddr + 0x2) + 0x6);
-	instrAddr += 0x6;
-	framerateCap = (uint32_t*)(instrAddr + readUnalignedU32(instrAddr + 0x2) + 0xA);
+		// Apply patches and install hooks.
+		if (Config::multiThreaded)
+		{
+			WRITE_MEMORY(sigSingleThreadedFlags(), uint8_t, 0x45, 0x31, 0xC9, 0x90);
+		}
 
-	printf("[High Refresh Rate] vsync: 0x%llx\n", vsync);
-	printf("[High Refresh Rate] framerateCap: 0x%llx\n", framerateCap);
+		// Disable 60hz limit and forced VSync when in fullscreen.
+		if (!Config::oldFullscreen)
+		{
+			WRITE_MEMORY((char*)sigSingleThreadedFlags() + 0x15, uint8_t, 0);
+			WRITE_MEMORY((char*)sigSingleThreadedFlags() + 0x1C, uint8_t, 0);
+		}
 
-	// Apply patches and install hooks.
-	if (Config::multiThreaded)
-	{
-		WRITE_MEMORY(sigSingleThreadedFlags(), uint8_t, 0x45, 0x31, 0xC9, 0x90);
-	}
+		INSTALL_HOOK(_SetFramerate);
+		INSTALL_HOOK(_SetFramerateInGame);
 
-	// Disable 60hz limit and forced VSync when in fullscreen.
-	if (!Config::oldFullscreen)
-	{
-		WRITE_MEMORY((char*)sigSingleThreadedFlags() + 0x15, uint8_t, 0);
-		WRITE_MEMORY((char*)sigSingleThreadedFlags() + 0x1C, uint8_t, 0);
-	}
-
-	INSTALL_HOOK(_SetFramerate);
-	INSTALL_HOOK(_SetFramerateInGame);
-
-	if (Config::newLimiter)
-	{
-		FrameLimiter::init();
+		if (Config::newLimiter)
+		{
+			FrameLimiter::init();
+		}
 	}
 }
