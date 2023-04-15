@@ -1,3 +1,5 @@
+#include <Windows.h>
+
 bool* visualSetting;
 int32_t* style;
 
@@ -48,21 +50,47 @@ extern "C"
 		{
 			uint8_t* instrAddr = (uint8_t*)sigVisualSetting() + 0x40;
 			visualSetting = (bool*)(instrAddr + readUnalignedU32(instrAddr + 0x3) + 0x7);
-			printf("[Future Tone Customization] visualSetting: 0x%llx\n", visualSetting);
+			printf("[Future Tone Customization2] visualSetting: 0x%llx\n", visualSetting);
 		}
 
 		{
 			uint8_t* instrAddr = (uint8_t*)sigStyle() + 0xA0;
 			style = (int32_t*)(instrAddr + readUnalignedU32(instrAddr + 0x3) + 0x7);
 			style -= 0x2;
-			printf("[Future Tone Customization] style: 0x%llx\n", style);
+			printf("[Future Tone Customization2] style: 0x%llx\n", style);
 		}
 	}
 
 	__declspec(dllexport) void OnFrame()
 	{
+
 		if (!sigValid)
 			return;
+
+		static bool f12KeyWasPressed = false;
+		bool f12KeyPressed = (GetAsyncKeyState(VK_F8) & 0x8000) != 0;
+
+		if (!sigValid)
+			return;
+
+		if (f12KeyPressed && !f12KeyWasPressed) // Toggle visualSetting when F12 key is pressed
+		{
+			
+			*visualSetting = !*visualSetting;
+			prevVisualSetting != *visualSetting;
+			printf
+			(
+				"[Future Tone Customization2] visualSetting: %s\n",
+				*visualSetting ? "true" : "false"
+			);
+			printf
+			(
+				"[Future Tone Customization2] prevVisualSetting: %s\n",
+				prevVisualSetting ? "true" : "false"
+			);
+		}
+
+		f12KeyWasPressed = f12KeyPressed;
 
 		if (prevVisualSetting != *visualSetting)
 		{
