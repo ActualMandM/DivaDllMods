@@ -37,6 +37,18 @@ const HMODULE MODULE_HANDLE = GetModuleHandle(nullptr);
 		DetourTransactionCommit(); \
 	} while(0)
 
+#define DECLARE_ASM_HOOK(NAME) extern "C" void* original##NAME; \
+	extern "C" void* implOf##NAME;
+
+#define INSTALL_HOOK_ADDRESSED(functionName, ADDRESS) \
+	do { \
+		*(void**)&original##functionName = (void*)ADDRESS; \
+		DetourTransactionBegin(); \
+		DetourUpdateThread(GetCurrentThread()); \
+		DetourAttach((void**)&original##functionName, &implOf##functionName); \
+		DetourTransactionCommit(); \
+	} while (0)
+
 #define VTABLE_HOOK(returnType, callingConvention, className, functionName, ...) \
 	typedef returnType callingConvention className##functionName(className* This, __VA_ARGS__); \
 	className##functionName* original##className##functionName; \
