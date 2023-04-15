@@ -1,6 +1,16 @@
 bool* visualSetting;
 int32_t* style;
 
+int64_t* songSelectAddr;
+
+SIG_SCAN
+(
+	sigCustomizationState,
+	0x14067EA3C,
+	"\x44\x8B\x49\x08\x45\x85\xC9\x7E\x26\xE8\x00\x00\x00\x00",
+	"xxxxxxxxxx????"
+);
+
 SIG_SCAN
 (
 	sigCustomizationStyle,
@@ -33,61 +43,77 @@ SIG_SCAN
 	"xxxxx????xxxx"
 );
 
+SIG_SCAN
+(
+	sigSongSelect,
+	0x1406F4920,
+	"\x48\x39\x2D\x00\x00\x00\x00\x74\x12\x48\x8D\x54\x24\x00\xE8\x00\x00\x00\x00\x48\x8B\xD8\x8D\x7D\x01\xEB\x25",
+	"xxx????xxxxxx?x????xxxxxxxx"
+);
+
 bool prevVisualSetting = (bool)-1;
 
-extern "C"
+HOOK(char, __fastcall, _CustomizationState, (char*)sigCustomizationState() - 0x3C, __int64 a1)
 {
-	__declspec(dllexport) void Init()
+	bool curVisualSetting = (*songSelectAddr != 0) ? *(bool*)(*songSelectAddr + 0x27538) : *visualSetting;
+
+	if (prevVisualSetting != curVisualSetting)
 	{
-		if (!sigValid)
+		if (curVisualSetting)
 		{
-			versionWarning(TEXT("Future Tone Customization"));
-			return;
+			WRITE_MEMORY((char*)sigCustomizationStyle() + 0x49, uint8_t, 0xB2, 0x01);
+			WRITE_MEMORY((char*)sigCustomizationStyle() + 0x55, uint8_t, 0x33, 0xD2);
+			WRITE_MEMORY((char*)sigCustomizationStyle() + 0x5C, uint8_t, 0xB2, 0x01);
+
+			WRITE_MEMORY((char*)sigNPRArchive() + 0x17A, int32_t, -1);
+
+			WRITE_MEMORY(style, int32_t, -1);
+		}
+		else
+		{
+			WRITE_MEMORY((char*)sigCustomizationStyle() + 0x49, uint8_t, 0x33, 0xD2);
+			WRITE_MEMORY((char*)sigCustomizationStyle() + 0x55, uint8_t, 0xB2, 0x01);
+			WRITE_MEMORY((char*)sigCustomizationStyle() + 0x5C, uint8_t, 0x33, 0xD2);
+
+			WRITE_MEMORY((char*)sigNPRArchive() + 0x17A, int32_t, 0);
+
+			WRITE_MEMORY(style, int32_t, 0);
 		}
 
-		{
-			uint8_t* instrAddr = (uint8_t*)sigVisualSetting() + 0x40;
-			visualSetting = (bool*)(instrAddr + readUnalignedU32(instrAddr + 0x3) + 0x7);
-			printf("[Future Tone Customization] visualSetting: 0x%llx\n", visualSetting);
-		}
-
-		{
-			uint8_t* instrAddr = (uint8_t*)sigStyle() + 0xA0;
-			style = (int32_t*)(instrAddr + readUnalignedU32(instrAddr + 0x3) + 0x7);
-			style -= 0x2;
-			printf("[Future Tone Customization] style: 0x%llx\n", style);
-		}
+		prevVisualSetting = curVisualSetting;
 	}
 
-	__declspec(dllexport) void OnFrame()
+	return original_CustomizationState(a1);
+}
+
+extern "C" __declspec(dllexport) void Init()
+{
+	if (!sigValid)
 	{
-		if (!sigValid)
-			return;
-
-		if (prevVisualSetting != *visualSetting)
-		{
-			if (*visualSetting)
-			{
-				WRITE_MEMORY((char*)sigCustomizationStyle() + 0x49, uint8_t, 0xB2, 0x01);
-				WRITE_MEMORY((char*)sigCustomizationStyle() + 0x55, uint8_t, 0x33, 0xD2);
-				WRITE_MEMORY((char*)sigCustomizationStyle() + 0x5C, uint8_t, 0xB2, 0x01);
-
-				WRITE_MEMORY((char*)sigNPRArchive() + 0x17A, int32_t, -1);
-
-				WRITE_MEMORY(style, int32_t, -1);
-			}
-			else
-			{
-				WRITE_MEMORY((char*)sigCustomizationStyle() + 0x49, uint8_t, 0x33, 0xD2);
-				WRITE_MEMORY((char*)sigCustomizationStyle() + 0x55, uint8_t, 0xB2, 0x01);
-				WRITE_MEMORY((char*)sigCustomizationStyle() + 0x5C, uint8_t, 0x33, 0xD2);
-
-				WRITE_MEMORY((char*)sigNPRArchive() + 0x17A, int32_t, 0);
-
-				WRITE_MEMORY(style, int32_t, 0);
-			}
-
-			prevVisualSetting = *visualSetting;
-		}
+		versionWarning(TEXT("Future Tone Customization"));
+		return;
 	}
+
+	// Save Data
+	{
+		uint8_t* instrAddr = (uint8_t*)sigVisualSetting() + 0x40;
+		visualSetting = (bool*)(instrAddr + readUnalignedU32(instrAddr + 0x3) + 0x7);
+		printf("[Future Tone Customization] visualSetting: 0x%llx\n", visualSetting);
+	}
+
+	// Song Select
+	{
+		uint8_t* instrAddr = (uint8_t*)sigSongSelect();
+		songSelectAddr = (int64_t*)(instrAddr + readUnalignedU32(instrAddr + 0x3) + 0x7);
+		printf("[Future Tone Customization] songSelectAddr: 0x%llx\n", songSelectAddr);
+	}
+
+	{
+		uint8_t* instrAddr = (uint8_t*)sigStyle() + 0xA0;
+		style = (int32_t*)(instrAddr + readUnalignedU32(instrAddr + 0x3) + 0x7);
+		style -= 0x2;
+		printf("[Future Tone Customization] style: 0x%llx\n", style);
+	}
+
+	INSTALL_HOOK(_CustomizationState);
 }
