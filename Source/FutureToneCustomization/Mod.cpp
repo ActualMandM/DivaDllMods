@@ -63,59 +63,44 @@ extern "C"
 
 	__declspec(dllexport) void OnFrame()
 	{
-
 		if (!sigValid)
 			return;
 
-		static bool f12KeyWasPressed = false;
-		bool f12KeyPressed = (GetAsyncKeyState(VK_F8) & 0x8000) != 0;
+		uintptr_t* baseAddress = (uintptr_t*)0x14CC5EF18;
+		uintptr_t finalAddress = *baseAddress + 0x27538;
 
-		if (!sigValid)
-			return;
-
-		if (f12KeyPressed && !f12KeyWasPressed) // Toggle visualSetting when F12 key is pressed
+		// Check if the base address is valid and points to a valid value (0 or 1)
+		if (baseAddress && (*baseAddress != 0) && (finalAddress != 0) && (*((bool*)finalAddress) == 0 || *((bool*)finalAddress) == 1))
 		{
-			
-			*visualSetting = !*visualSetting;
-			prevVisualSetting != *visualSetting;
-			printf
-			(
-				"[Future Tone Customization2] visualSetting: %s\n",
-				*visualSetting ? "true" : "false"
-			);
-			printf
-			(
-				"[Future Tone Customization2] prevVisualSetting: %s\n",
-				prevVisualSetting ? "true" : "false"
-			);
-		}
+			*visualSetting = *((bool*)finalAddress);
+			prevVisualSetting = !(*visualSetting);
 
-		f12KeyWasPressed = f12KeyPressed;
-
-		if (prevVisualSetting != *visualSetting)
-		{
-			if (*visualSetting)
+			if (prevVisualSetting != *visualSetting)
 			{
-				WRITE_MEMORY((char*)sigCustomizationStyle() + 0x49, uint8_t, 0xB2, 0x01);
-				WRITE_MEMORY((char*)sigCustomizationStyle() + 0x55, uint8_t, 0x33, 0xD2);
-				WRITE_MEMORY((char*)sigCustomizationStyle() + 0x5C, uint8_t, 0xB2, 0x01);
+				if (*visualSetting)
+				{
+					WRITE_MEMORY((char*)sigCustomizationStyle() + 0x49, uint8_t, 0xB2, 0x01);
+					WRITE_MEMORY((char*)sigCustomizationStyle() + 0x55, uint8_t, 0x33, 0xD2);
+					WRITE_MEMORY((char*)sigCustomizationStyle() + 0x5C, uint8_t, 0xB2, 0x01);
 
-				WRITE_MEMORY((char*)sigNPRArchive() + 0x17A, int32_t, -1);
+					WRITE_MEMORY((char*)sigNPRArchive() + 0x17A, int32_t, -1);
 
-				WRITE_MEMORY(style, int32_t, -1);
+					WRITE_MEMORY(style, int32_t, -1);
+				}
+				else
+				{
+					WRITE_MEMORY((char*)sigCustomizationStyle() + 0x49, uint8_t, 0x33, 0xD2);
+					WRITE_MEMORY((char*)sigCustomizationStyle() + 0x55, uint8_t, 0xB2, 0x01);
+					WRITE_MEMORY((char*)sigCustomizationStyle() + 0x5C, uint8_t, 0x33, 0xD2);
+
+					WRITE_MEMORY((char*)sigNPRArchive() + 0x17A, int32_t, 0);
+
+					WRITE_MEMORY(style, int32_t, 0);
+				}
+
+				prevVisualSetting = *visualSetting;
 			}
-			else
-			{
-				WRITE_MEMORY((char*)sigCustomizationStyle() + 0x49, uint8_t, 0x33, 0xD2);
-				WRITE_MEMORY((char*)sigCustomizationStyle() + 0x55, uint8_t, 0xB2, 0x01);
-				WRITE_MEMORY((char*)sigCustomizationStyle() + 0x5C, uint8_t, 0x33, 0xD2);
-
-				WRITE_MEMORY((char*)sigNPRArchive() + 0x17A, int32_t, 0);
-
-				WRITE_MEMORY(style, int32_t, 0);
-			}
-
-			prevVisualSetting = *visualSetting;
 		}
 	}
+
 }
