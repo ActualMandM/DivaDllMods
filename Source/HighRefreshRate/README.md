@@ -1,6 +1,6 @@
 # High Refresh Rate
 
-Code for a MM+ mod that allows the game to run at higher framerates, alongside replacing the game's frame limiter with a more precise one.
+Code for a Mega Mix+ mod that allows the game to run at higher framerates, alongside replacing the game's frame limiter with a more precise one.
 
 ## Special thanks
 

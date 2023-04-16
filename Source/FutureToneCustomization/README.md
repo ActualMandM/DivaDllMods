@@ -1,6 +1,6 @@
-# FutureToneCustomization
+# Future Tone Customization
 
-Code that makes the Customization menu use the Future Tone style.
+Code for a Mega Mix+ mod that allows the Customization menu to use the Future Tone style.
 
 ## Special thanks
 

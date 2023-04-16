@@ -1,3 +1,3 @@
 # Restore Cut Songs
 
-Simple code that bypasses MM+'s blacklist for Saturation.
+Code for a simple mod that bypasses Mega Mix+'s blacklist for Saturation.
