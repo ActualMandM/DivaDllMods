@@ -28,7 +28,7 @@ SIG_SCAN
 	"xxxxx????xxx????xxxxxxx????xxxxxxx?x????x????xx"
 );
 
-HOOK(void, __fastcall, _SetFramerate, (char*)sigSetFramerate())
+HOOK(void, __fastcall, _SetFramerate, sigSetFramerate())
 {
 	*vsync = Config::enableVSync;
 
@@ -83,10 +83,12 @@ extern "C"
 		Config::init();
 
 		// Grab the vsync and framerate cap addresses.
-		uint8_t* instrAddr = (uint8_t*)sigSetFramerate();
-		vsync = (bool*)(instrAddr + readUnalignedU32(instrAddr + 0x2) + 0x6);
-		instrAddr += 0x6;
-		framerateCap = (uint32_t*)(instrAddr + readUnalignedU32(instrAddr + 0x2) + 0xA);
+		{
+			uint8_t* instrAddr = (uint8_t*)sigSetFramerate();
+			vsync = (bool*)(instrAddr + readUnalignedU32(instrAddr + 0x2) + 0x6);
+			instrAddr += 0x6;
+			framerateCap = (uint32_t*)(instrAddr + readUnalignedU32(instrAddr + 0x2) + 0xA);
+		}
 
 		printf("[High Refresh Rate] vsync: 0x%llx\n", vsync);
 		printf("[High Refresh Rate] framerateCap: 0x%llx\n", framerateCap);
