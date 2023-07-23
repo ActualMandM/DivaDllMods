@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SoundThemeNameChanger", "So
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DivaPlayground", "Source\DivaPlayground\DivaPlayground.vcxproj", "{579BE05D-1F12-475E-90B2-5AF4FC7E072A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TLACCamera", "Source\TLACCamera\TLACCamera.vcxproj", "{D4821AF5-462F-485B-9BE8-754178E415FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -81,6 +83,14 @@ Global
 		{579BE05D-1F12-475E-90B2-5AF4FC7E072A}.Release|x64.Build.0 = Release|x64
 		{579BE05D-1F12-475E-90B2-5AF4FC7E072A}.Release|x86.ActiveCfg = Release|Win32
 		{579BE05D-1F12-475E-90B2-5AF4FC7E072A}.Release|x86.Build.0 = Release|Win32
+		{D4821AF5-462F-485B-9BE8-754178E415FD}.Debug|x64.ActiveCfg = Debug|x64
+		{D4821AF5-462F-485B-9BE8-754178E415FD}.Debug|x64.Build.0 = Debug|x64
+		{D4821AF5-462F-485B-9BE8-754178E415FD}.Debug|x86.ActiveCfg = Debug|Win32
+		{D4821AF5-462F-485B-9BE8-754178E415FD}.Debug|x86.Build.0 = Debug|Win32
+		{D4821AF5-462F-485B-9BE8-754178E415FD}.Release|x64.ActiveCfg = Release|x64
+		{D4821AF5-462F-485B-9BE8-754178E415FD}.Release|x64.Build.0 = Release|x64
+		{D4821AF5-462F-485B-9BE8-754178E415FD}.Release|x86.ActiveCfg = Release|Win32
+		{D4821AF5-462F-485B-9BE8-754178E415FD}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
