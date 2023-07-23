@@ -1,6 +1,8 @@
 #include <algorithm>
-#include <Windows.h>
+#include <XInput.h>
 #include "Utilities/Math.h"
+
+#define INPUT_DEADZONE  ( 0.24f * FLOAT(0x7FFF) )
 
 using namespace Utilities;
 

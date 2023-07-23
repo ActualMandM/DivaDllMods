@@ -5,6 +5,7 @@ Code for a Mega Mix+ mod that implements the camera component from [PD Loader](h
 ## Special thanks
 
  - [nastys](https://github.com/nastys) for the original code in PD-Loader's TLAC.
+ - [Skyth](https://github.com/blueskythlikesclouds) for the control scheme from GenerationsFreeCamera.
 
 ## References
 
