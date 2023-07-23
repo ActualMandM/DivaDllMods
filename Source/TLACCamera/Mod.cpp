@@ -112,21 +112,20 @@ extern "C"
 				camera->HorizontalFov = std::clamp(camera->HorizontalFov, +1.0f, +170.0f);
 			}
 
-			/* mouse code
-			if (mouse->HasMoved())
-			{
-				SetMouseWindowCenter();
+			bool camup = GetAsyncKeyState(0x49) != 0;				// I
+			bool camdown = GetAsyncKeyState(0x4B) != 0;				// K
+			bool camleft = GetAsyncKeyState(0x4A) != 0;				// J
+			bool camright = GetAsyncKeyState(0x4C) != 0;			// L
 
-				auto delta = mouse->GetDeltaPosition();
+			float vertDelta = (camright ? 50 : camleft ? -50 : 0) * speed;
+			float horzDelta = (camdown ? 50 : camup ? -50 : 0) * speed;
 
-				verticalRotation += delta.x * sensitivity;
-				horizontalRotation -= delta.y * (sensitivity / 5.0f);
+			verticalRotation += vertDelta * sensitivity;
+			horizontalRotation -= horzDelta * (sensitivity / 5.0f);
 
-				horizontalRotation = std::clamp(horizontalRotation, -75.0f, +75.0f);
-			}
-			*/
+			horizontalRotation = std::clamp(horizontalRotation, -75.0f, +75.0f);
 
-			Utilities::Vec2 focus = PointFromAngle(verticalRotation, 1.0f);
+			Vec2 focus = PointFromAngle(verticalRotation, 1.0f);
 			camera->Focus.X = camera->Position.X + focus.X;
 			camera->Focus.Z = camera->Position.Z + focus.Y;
 
