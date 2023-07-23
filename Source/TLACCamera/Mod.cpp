@@ -123,16 +123,11 @@ extern "C"
 						normalizedMagnitudeL = 0.0;
 					}
 
-					bool forward = normalizedLY > 0;
-					bool backward = normalizedLY < 0;
-					bool left = normalizedLX < 0;
-					bool right = normalizedLX > 0;
-
 					bool up = (Buttons & 0x200) != 0;
 					bool down = (Buttons & 0x100) != 0;
 
-					bool fast = state.Gamepad.bRightTrigger > 0;
-					bool slow = state.Gamepad.bLeftTrigger > 0;
+					bool fast = state.Gamepad.bRightTrigger > 0.0f;
+					bool slow = state.Gamepad.bLeftTrigger > 0.0f;
 
 					bool counterclockwise = (Buttons & 0x4) != 0;
 					bool clockwise = (Buttons & 0x8) != 0;
@@ -142,11 +137,8 @@ extern "C"
 
 					float speed = (1000.0f / 60.0f) * (fast ? fastSpeed : slow ? slowSpeed : normalSpeed);
 
-					if (forward ^ backward)
-						camera->Position += PointFromAngle(verticalRotation + (forward ? +0.0f : -180.0f), speed);
-
-					if (left ^ right)
-						camera->Position += PointFromAngle(verticalRotation + (right ? +90.0f : -90.0f), speed);
+					camera->Position += PointFromAngle(verticalRotation + ((normalizedLY > 0.0f) ? 0.0f : -180.0f), speed * normalizedMagnitudeL);
+					camera->Position += PointFromAngle(verticalRotation + ((normalizedLX > 0.0f) ? 90.0f : -90.0f), speed * normalizedMagnitudeL);
 
 					if (up ^ down)
 						camera->Position.Y += speed * (up ? +0.25f : -0.25f);
@@ -191,13 +183,8 @@ extern "C"
 						normalizedMagnitudeR = 0.0;
 					}
 
-					bool camup = normalizedRY > 0;
-					bool camdown = normalizedRY < 0;
-					bool camleft = normalizedRX < 0;
-					bool camright = normalizedRX > 0;
-
-					float vertDelta = (camright ? 50 : camleft ? -50 : 0) * speed;
-					float horzDelta = (camdown ? 50 : camup ? -50 : 0) * speed;
+					float vertDelta = ((normalizedRX > 0.0f) ? 50 : (normalizedRX < 0.0f) ? -50 : 0) * (speed * normalizedMagnitudeR);
+					float horzDelta = ((normalizedRY < 0.0f) ? 50 : (normalizedRY > 0.0f) ? -50 : 0) * (speed * normalizedMagnitudeR);
 
 					verticalRotation += vertDelta * sensitivity;
 					horizontalRotation -= horzDelta * (sensitivity / 5.0f);
