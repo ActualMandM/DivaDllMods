@@ -32,7 +32,7 @@ HOOK(void, __fastcall, _CameraPerspective, 0x1402FB7D0, int64_t a1)
 		return original_CameraPerspective(a1);
 }
 
-void cameraSetup(bool enabled)
+void cameraSetup(bool enabled, bool all)
 {
 	if (!enabled)
 		return;
@@ -44,10 +44,20 @@ void cameraSetup(bool enabled)
 
 	horizontalRotation = 0;
 	camera->Rotation = defaultRotation;
-	camera->HorizontalFov = defaultFov;
+
+	if (all)
+	{
+		speedFactor = 1.0f;
+		camera->HorizontalFov = defaultFov;
+	}
 }
 
-bool enabledWasPressed = false;
+bool backWasPressed = false;
+bool aWasPressed = false;
+bool bWasPressed = false;
+bool xWasPressed = false;
+bool yWasPressed = false;
+bool rsWasPressed = false;
 
 extern "C"
 {
@@ -77,20 +87,64 @@ extern "C"
 			{
 				WORD Buttons = state.Gamepad.wButtons;
 
-				bool enabledPressed = (Buttons & 0x20) != 0;
-
-				if (enabledPressed && !enabledWasPressed)
 				{
-					isEnabled = !isEnabled;
-					cameraSetup(isEnabled);
-				}
+					bool backPressed = (Buttons & 0x20) != 0;
 
-				enabledWasPressed = enabledPressed;
+					if (backPressed && !backWasPressed)
+					{
+						isEnabled = !isEnabled;
+						cameraSetup(isEnabled, true);
+					}
+
+					backWasPressed = backPressed;
+				}
 
 				if (isEnabled)
 				{
-					if ((Buttons & 0x80) != 0)
-						cameraSetup(true);
+					{
+						bool aPressed = (Buttons & 0x1000) != 0;
+
+						if (aPressed && !aWasPressed)
+							speedFactor += 0.05f;
+
+						aWasPressed = aPressed;
+					}
+
+					{
+						bool bPressed = (Buttons & 0x2000) != 0;
+
+						if (bPressed && !bWasPressed)
+							speedFactor -= 0.05f;
+
+						bWasPressed = bPressed;
+					}
+
+					{
+						bool xPressed = (Buttons & 0x4000) != 0;
+
+						if (xPressed && !xWasPressed)
+							speedFactor = 1.0f;
+
+						xWasPressed = xPressed;
+					}
+
+					{
+						bool yPressed = (Buttons & 0x8000) != 0;
+
+						if (yPressed && !yWasPressed)
+							camera->HorizontalFov = defaultFov;
+
+						yWasPressed = yPressed;
+					}
+
+					{
+						bool rsPressed = (Buttons & 0x80) != 0;
+
+						if (rsPressed && !rsWasPressed)
+							cameraSetup(isEnabled, false);
+
+						rsWasPressed = rsPressed;
+					}
 
 					float LX = state.Gamepad.sThumbLX;
 					float LY = state.Gamepad.sThumbLY;
@@ -137,7 +191,8 @@ extern "C"
 					bool zoomin = (Buttons & 0x1) != 0;
 					bool zoomout = (Buttons & 0x2) != 0;
 
-					float speed = (1000.0f / 60.0f) * (fast ? fastSpeed : slow ? slowSpeed : normalSpeed);
+					float elapsed = (1000.0f / 60.0f);
+					float speed = max(0.001f, elapsed * (fast ? fastSpeed : slow ? slowSpeed : normalSpeed) * speedFactor);
 
 					if (normalizedLY != 0.0f)
 						camera->Position += PointFromAngle(verticalRotation, (speed * normalizedLY) * normalizedMagnitudeL);

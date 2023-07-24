@@ -20,8 +20,9 @@ const float defaultRotation = 0.0f;
 const float defaultFov = 45.0f;
 const float sensitivity = 0.25f;
 
-float verticalRotation;
-float horizontalRotation;
+float speedFactor = 1.0f;
+float verticalRotation = 0.0f;
+float horizontalRotation = 0.0f;
 
 bool isEnabled = false;
 Camera* camera;
