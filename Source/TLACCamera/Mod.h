@@ -12,14 +12,12 @@ struct Camera
 	float Rotation, HorizontalFov, VerticalFov;
 };
 
-constexpr uint64_t _Camera = 0x14CC2B590;
-
-const float fastSpeed = 0.1f;
-const float slowSpeed = 0.0005f;
-const float normalSpeed = 0.005f;
+const float fastSpeed = 0.05f;
+const float slowSpeed = 0.005f;
+const float normalSpeed = 0.01f;
 
 const float defaultRotation = 0.0f;
-const float defaultFov = 70.0f;
+const float defaultFov = 45.0f;
 const float sensitivity = 0.25f;
 
 float verticalRotation;

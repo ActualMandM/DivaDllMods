@@ -58,7 +58,7 @@ extern "C"
 		INSTALL_HOOK(_CameraRotation);
 		INSTALL_HOOK(_CameraPerspective);
 
-		camera = (Camera*)_Camera;
+		camera = (Camera*)0x14CC2B590;
 	}
 
 	void __declspec(dllexport) OnFrame()
@@ -98,11 +98,9 @@ extern "C"
 					//determine how far the controller is pushed
 					float magnitudeL = sqrt(LX * LX + LY * LY);
 
-					//determine the direction the controller is pushed
-					float normalizedLX = LX / magnitudeL;
-					float normalizedLY = LY / magnitudeL;
-
-					float normalizedMagnitudeL = 0;
+					float normalizedLX = 0.0f;
+					float normalizedLY = 0.0f;
+					float normalizedMagnitudeL = 0.0f;
 
 					//check if the controller is outside a circular dead zone
 					if (magnitudeL > INPUT_DEADZONE)
@@ -113,14 +111,18 @@ extern "C"
 						//adjust magnitude relative to the end of the dead zone
 						magnitudeL -= INPUT_DEADZONE;
 
+						//determine the direction the controller is pushed
+						normalizedLX = LX / magnitudeL;
+						normalizedLY = LY / magnitudeL;
+
 						//optionally normalize the magnitude with respect to its expected range
 						//giving a magnitude value of 0.0 to 1.0
 						normalizedMagnitudeL = magnitudeL / (32767 - INPUT_DEADZONE);
 					}
 					else //if the controller is in the deadzone zero out the magnitude
 					{
-						magnitudeL = 0.0;
-						normalizedMagnitudeL = 0.0;
+						magnitudeL = 0.0f;
+						normalizedMagnitudeL = 0.0f;
 					}
 
 					bool up = (Buttons & 0x200) != 0;
@@ -137,8 +139,11 @@ extern "C"
 
 					float speed = (1000.0f / 60.0f) * (fast ? fastSpeed : slow ? slowSpeed : normalSpeed);
 
-					camera->Position += PointFromAngle(verticalRotation + ((normalizedLY > 0.0f) ? 0.0f : -180.0f), speed * normalizedMagnitudeL);
-					camera->Position += PointFromAngle(verticalRotation + ((normalizedLX > 0.0f) ? 90.0f : -90.0f), speed * normalizedMagnitudeL);
+					if (normalizedLY != 0.0f)
+						camera->Position += PointFromAngle(verticalRotation, (speed * normalizedLY) * normalizedMagnitudeL);
+
+					if (normalizedLX != 0.0f)
+						camera->Position += PointFromAngle(verticalRotation + 90.0f, (speed * normalizedLX) * normalizedMagnitudeL);
 
 					if (up ^ down)
 						camera->Position.Y += speed * (up ? +0.25f : -0.25f);
@@ -158,11 +163,9 @@ extern "C"
 					//determine how far the controller is pushed
 					float magnitudeR = sqrt(RX * RX + RY * RY);
 
-					//determine the direction the controller is pushed
-					float normalizedRX = RX / magnitudeR;
-					float normalizedRY = RY / magnitudeR;
-
-					float normalizedMagnitudeR = 0;
+					float normalizedRX = 0.0f;
+					float normalizedRY = 0.0f;
+					float normalizedMagnitudeR = 0.0f;
 
 					//check if the controller is outside a circular dead zone
 					if (magnitudeR > INPUT_DEADZONE)
@@ -172,6 +175,10 @@ extern "C"
 
 						//adjust magnitude relative to the end of the dead zone
 						magnitudeR -= INPUT_DEADZONE;
+
+						//determine the direction the controller is pushed
+						normalizedRX = RX / magnitudeR;
+						normalizedRY = RY / magnitudeR;
 
 						//optionally normalize the magnitude with respect to its expected range
 						//giving a magnitude value of 0.0 to 1.0
@@ -183,13 +190,13 @@ extern "C"
 						normalizedMagnitudeR = 0.0;
 					}
 
-					float vertDelta = ((normalizedRX > 0.0f) ? 50 : (normalizedRX < 0.0f) ? -50 : 0) * (speed * normalizedMagnitudeR);
-					float horzDelta = ((normalizedRY < 0.0f) ? 50 : (normalizedRY > 0.0f) ? -50 : 0) * (speed * normalizedMagnitudeR);
+					float vertDelta = (normalizedRX * 45.0f) * (speed * normalizedMagnitudeR);
+					float horzDelta = (-normalizedRY * 45.0f) * (speed * normalizedMagnitudeR);
 
 					verticalRotation += vertDelta * sensitivity;
 					horizontalRotation -= horzDelta * (sensitivity / 5.0f);
 
-					horizontalRotation = std::clamp(horizontalRotation, -75.0f, +75.0f);
+					horizontalRotation = std::clamp(horizontalRotation, -75.0f, 75.0f);
 
 					Vec2 focus = PointFromAngle(verticalRotation, 1.0f);
 					camera->Focus.X = camera->Position.X + focus.X;
