@@ -128,6 +128,8 @@ extern "C"
 						xWasPressed = xPressed;
 					}
 
+					speedFactor = max(0.05f, speedFactor);
+
 					{
 						bool yPressed = (Buttons & 0x8000) != 0;
 
@@ -192,7 +194,7 @@ extern "C"
 					bool zoomout = (Buttons & 0x2) != 0;
 
 					float elapsed = (1000.0f / 60.0f);
-					float speed = max(0.001f, elapsed * (fast ? fastSpeed : slow ? slowSpeed : normalSpeed) * speedFactor);
+					float speed = max(0.005f, elapsed * (fast ? fastSpeed : slow ? slowSpeed : normalSpeed) * speedFactor);
 
 					if (normalizedLY != 0.0f)
 						camera->Position += PointFromAngle(verticalRotation, (speed * normalizedLY) * normalizedMagnitudeL);
@@ -245,13 +247,16 @@ extern "C"
 						normalizedMagnitudeR = 0.0;
 					}
 
-					float vertDelta = (normalizedRX * 45.0f) * (speed * normalizedMagnitudeR);
-					float horzDelta = (-normalizedRY * 45.0f) * (speed * normalizedMagnitudeR);
+					if (normalizedMagnitudeR != 0.0f)
+					{
+						float vertDelta = (normalizedRX * 45.0f) * (speed * normalizedMagnitudeR);
+						float horzDelta = (-normalizedRY * 45.0f) * (speed * normalizedMagnitudeR);
 
-					verticalRotation += vertDelta * sensitivity;
-					horizontalRotation -= horzDelta * (sensitivity / 5.0f);
+						verticalRotation += vertDelta * sensitivity;
+						horizontalRotation -= horzDelta * (sensitivity / 5.0f);
 
-					horizontalRotation = std::clamp(horizontalRotation, -75.0f, 75.0f);
+						horizontalRotation = std::clamp(horizontalRotation, -75.0f, 75.0f);
+					}
 
 					Vec2 focus = PointFromAngle(verticalRotation, 1.0f);
 					camera->Focus.X = camera->Position.X + focus.X;
