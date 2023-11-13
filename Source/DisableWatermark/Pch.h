@@ -2,7 +2,7 @@
 
 #define WIN32_LEAN_AND_MEAN
 
-#define MOD_NAME "Disable Watermark"
+#define MOD_NAME "Disable Watermarks"
 
 // Detours
 #include <Windows.h>
