@@ -76,7 +76,7 @@ extern "C"
 	{
 		if (!sigValid)
 		{
-			versionWarning(TEXT("High Refresh Rate"));
+			versionWarning(TEXT("High Frame Rate"));
 			return;
 		}
 
@@ -90,8 +90,8 @@ extern "C"
 			framerateCap = (uint32_t*)(instrAddr + readUnalignedU32(instrAddr + 0x2) + 0xA);
 		}
 
-		printf("[High Refresh Rate] vsync: 0x%llx\n", vsync);
-		printf("[High Refresh Rate] framerateCap: 0x%llx\n", framerateCap);
+		printf("[High Frame Rate] vsync: 0x%llx\n", vsync);
+		printf("[High Frame Rate] framerateCap: 0x%llx\n", framerateCap);
 
 		// Apply patches and install hooks.
 		if (Config::multiThreaded)
