@@ -72,7 +72,7 @@ extern "C" __declspec(dllexport) void Init()
 {
 	if (!sigValid)
 	{
-		versionWarning(TEXT("Disable Watermark"));
+		versionWarning(TEXT(MOD_NAME));
 		return;
 	}
 
@@ -98,7 +98,7 @@ extern "C" __declspec(dllexport) void Init()
 
 		uint8_t* instrAddr = (uint8_t*)sigGetPVMode() - 0x10;
 		pvMode = (bool*)(instrAddr + readUnalignedU32(instrAddr + 0x3) + 0x20);
-		printf("[Disable Watermarks] pvMode: 0x%llx\n", pvMode);
+		printf("[%s] pvMode: 0x%llx\n", MOD_NAME, pvMode);
 		INSTALL_HOOK(_SetGameModeNX);
 		INSTALL_HOOK(_SetGameModePS4);
 	}

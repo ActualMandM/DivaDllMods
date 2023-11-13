@@ -90,7 +90,7 @@ extern "C" __declspec(dllexport) void Init()
 {
 	if (!sigValid)
 	{
-		versionWarning(TEXT("Future Tone Customization"));
+		versionWarning(TEXT(MOD_NAME));
 		return;
 	}
 
@@ -98,21 +98,21 @@ extern "C" __declspec(dllexport) void Init()
 	{
 		uint8_t* instrAddr = (uint8_t*)sigVisualSetting() + 0x40;
 		visualSetting = (bool*)(instrAddr + readUnalignedU32(instrAddr + 0x3) + 0x7);
-		printf("[Future Tone Customization] visualSetting: 0x%llx\n", visualSetting);
+		printf("[%s] visualSetting: 0x%llx\n", MOD_NAME, visualSetting);
 	}
 
 	// Song Select
 	{
 		uint8_t* instrAddr = (uint8_t*)sigSongSelect();
 		songSelectAddr = (int64_t*)(instrAddr + readUnalignedU32(instrAddr + 0x3) + 0x7);
-		printf("[Future Tone Customization] songSelectAddr: 0x%llx\n", songSelectAddr);
+		printf("[%s] songSelectAddr: 0x%llx\n", MOD_NAME, songSelectAddr);
 	}
 
 	{
 		uint8_t* instrAddr = (uint8_t*)sigStyle() + 0xA0;
 		style = (int32_t*)(instrAddr + readUnalignedU32(instrAddr + 0x3) + 0x7);
 		style -= 0x2;
-		printf("[Future Tone Customization] style: 0x%llx\n", style);
+		printf("[%s] style: 0x%llx\n", MOD_NAME, style);
 	}
 
 	INSTALL_HOOK(_CustomizationState);

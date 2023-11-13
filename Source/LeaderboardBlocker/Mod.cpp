@@ -8,7 +8,7 @@ SIG_SCAN
 
 HOOK(char, __fastcall, _LeaderboardUpload, sigUploadSettingCheck())
 {
-	printf("[Leaderboard Blocker] Leaderboard upload detected, blocking.\n");
+	printf("[%s] Leaderboard upload detected, blocking.\n", MOD_NAME);
 	return 0;
 }
 
@@ -16,7 +16,7 @@ extern "C" __declspec(dllexport) void Init()
 {
 	if (!sigValid)
 	{
-		versionWarning(TEXT("Leaderboard Blocker"));
+		versionWarning(TEXT(MOD_NAME));
 		return;
 	}
 

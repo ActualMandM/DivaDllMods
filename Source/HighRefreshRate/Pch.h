@@ -2,6 +2,8 @@
 
 #define WIN32_LEAN_AND_MEAN
 
+#define MOD_NAME "High Frame Rate"
+
 // Detours
 #include <Windows.h>
 #include <detours.h>

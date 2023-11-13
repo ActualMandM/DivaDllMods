@@ -16,7 +16,7 @@ bool Config::init()
     {
         char text[1024];
         sprintf_s(text, "Failed to parse config.toml:\n%s", exception.what());
-        MessageBoxA(nullptr, text, "Disable Watermarks", MB_OK | MB_ICONERROR);
+        MessageBoxA(nullptr, text, MOD_NAME, MB_OK | MB_ICONERROR);
     }
 
 	pvMark = config["pv"].value_or(true);

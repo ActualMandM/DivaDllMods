@@ -18,7 +18,7 @@ extern "C" __declspec(dllexport) void Init()
 {
 	if (!sigValid)
 	{
-		versionWarning(TEXT("Restore Cut Songs"));
+		versionWarning(TEXT(MOD_NAME));
 		return;
 	}
 

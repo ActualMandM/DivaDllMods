@@ -9,7 +9,7 @@ extern "C" __declspec(dllexport) void Init()
 {
 	if (!sigValid)
 	{
-		versionWarning(TEXT("Sound Theme Name Changer"));
+		versionWarning(TEXT(MOD_NAME));
 		return;
 	}
 
