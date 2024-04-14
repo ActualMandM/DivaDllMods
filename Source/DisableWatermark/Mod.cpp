@@ -56,11 +56,11 @@ SIG_SCAN
 
 static bool GetLyricVisibility()
 {
-	if (Config::hideLyrics && Config::hideRhythmLyrics)
+	if (Config::hidePVLyrics && Config::hideRhythmLyrics)
 	{
 		return true;
 	}
-	else if (Config::hideLyrics)
+	else if (Config::hidePVLyrics)
 	{
 		return *pvMode;
 	}
@@ -110,7 +110,7 @@ extern "C" __declspec(dllexport) void Init()
 		WRITE_MEMORY(sigScreenshot(), uint8_t, 0xC3);
 	}
 
-	if (Config::hideLyrics || Config::hideRhythmLyrics)
+	if (Config::hidePVLyrics || Config::hideRhythmLyrics)
 	{
 		WRITE_MEMORY((char*)sigPhotoMode() + 0x2A, bool, true);
 
