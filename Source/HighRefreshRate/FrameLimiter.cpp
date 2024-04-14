@@ -88,14 +88,14 @@ HOOK(HRESULT, WINAPI, D3D11CreateDeviceAndSwapChain, PROC_ADDRESS("d3d11.dll", "
 	return result;
 }
 
-void FrameLimiter::setCap(intmax_t maxFPS, bool enableLimiter)
+void FrameLimiter::SetCap(intmax_t maxFPS, bool enableLimiter)
 {
 	frame_ratio = FrameRatio(60.0 / (double)maxFPS);
 	frame_portion_ms = duration_cast<milliseconds>(frame_ratio) - milliseconds(1);
 	enable_frame_limit = enableLimiter;
 }
 
-void FrameLimiter::init()
+void FrameLimiter::Init()
 {
 	INSTALL_HOOK(D3D11CreateDeviceAndSwapChain);
 	INSTALL_HOOK(_FrameLimiter);

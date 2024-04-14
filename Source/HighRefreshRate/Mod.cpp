@@ -61,11 +61,11 @@ extern "C"
 		{
 			if (*framerateCap == 0)
 			{
-				FrameLimiter::setCap(60, false);
+				FrameLimiter::SetCap(60, false);
 			}
 			else
 			{
-				FrameLimiter::setCap(*framerateCap, true);
+				FrameLimiter::SetCap(*framerateCap, true);
 			}
 
 			prevFramerateCap = *framerateCap;
@@ -80,7 +80,7 @@ extern "C"
 			return;
 		}
 
-		Config::init();
+		Config::Init();
 
 		// Grab the vsync and framerate cap addresses.
 		{
@@ -111,7 +111,7 @@ extern "C"
 
 		if (Config::newLimiter)
 		{
-			FrameLimiter::init();
+			FrameLimiter::Init();
 		}
 	}
 }

@@ -6,6 +6,7 @@ class Config
 		static bool pvMark;
 		static uint8_t copyrightMark;
 		static bool hideLyrics;
+		static bool rhythmLyrics;
 	
-		static bool init();
+		static bool Init();
 };

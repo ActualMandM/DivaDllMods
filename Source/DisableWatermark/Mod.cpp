@@ -54,18 +54,36 @@ SIG_SCAN
 	"xxxxx????xxxxx"
 )
 
+static bool GetLyricVisibility()
+{
+	if (Config::hideLyrics && !Config::rhythmLyrics)
+	{
+		return true;
+	}
+	else if (Config::hideLyrics)
+	{
+		return *pvMode;
+	}
+	else if (!Config::rhythmLyrics)
+	{
+		return !*pvMode;
+	}
+
+	return false;
+}
+
 HOOK(void, __fastcall, _SetGameModeNX, sigGameModeNX(), __int64 a1)
 {
 	original_SetGameModeNX(a1);
 
-	WRITE_MEMORY((char*)sigLyrics() + 0x38, bool, *pvMode);
+	WRITE_MEMORY((char*)sigLyrics() + 0x38, bool, GetLyricVisibility());
 }
 
 HOOK(void, __fastcall, _SetGameModePS4, sigGameModePS4(), __int64 a1)
 {
 	original_SetGameModePS4(a1);
 
-	WRITE_MEMORY((char*)sigLyrics() + 0x38, bool, *pvMode);
+	WRITE_MEMORY((char*)sigLyrics() + 0x38, bool, GetLyricVisibility());
 }
 
 extern "C" __declspec(dllexport) void Init()
@@ -76,7 +94,7 @@ extern "C" __declspec(dllexport) void Init()
 		return;
 	}
 
-	Config::init();
+	Config::Init();
 
 	if (Config::pvMark)
 	{
@@ -92,7 +110,7 @@ extern "C" __declspec(dllexport) void Init()
 		WRITE_MEMORY(sigScreenshot(), uint8_t, 0xC3);
 	}
 
-	if (Config::hideLyrics)
+	if (Config::hideLyrics || !Config::rhythmLyrics)
 	{
 		WRITE_MEMORY((char*)sigPhotoMode() + 0x2A, bool, true);
 

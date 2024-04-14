@@ -3,8 +3,9 @@
 bool Config::pvMark;
 uint8_t Config::copyrightMark;
 bool Config::hideLyrics;
+bool Config::rhythmLyrics;
 
-bool Config::init()
+bool Config::Init()
 {
     toml::table config;
 
@@ -22,6 +23,7 @@ bool Config::init()
 	pvMark = config["pv"].value_or(true);
 	copyrightMark = config["copyright"].value_or(1);
 	hideLyrics = config["lyrics"].value_or(true);
+	rhythmLyrics = config["rhythmlyrics"].value_or(true);
 
     return true;
 }

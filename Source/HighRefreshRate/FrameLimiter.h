@@ -3,6 +3,6 @@
 class FrameLimiter
 {
 	public:
-		static void init();
-		static void setCap(intmax_t maxFPS, bool enableLimiter);
+		static void Init();
+		static void SetCap(intmax_t maxFPS, bool enableLimiter);
 };

@@ -10,5 +10,5 @@ class Config
 		static bool newLimiter;
 		static bool oldFullscreen;
 
-		static bool init();
+		static bool Init();
 };

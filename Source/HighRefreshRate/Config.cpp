@@ -7,7 +7,7 @@ bool Config::multiThreaded;
 bool Config::newLimiter;
 bool Config::oldFullscreen;
 
-bool Config::init()
+bool Config::Init()
 {
     toml::table config;
 
