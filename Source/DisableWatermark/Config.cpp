@@ -3,7 +3,7 @@
 bool Config::pvMark;
 uint8_t Config::copyrightMark;
 bool Config::hideLyrics;
-bool Config::rhythmLyrics;
+bool Config::hideRhythmLyrics;
 
 bool Config::Init()
 {
@@ -23,7 +23,7 @@ bool Config::Init()
 	pvMark = config["pv"].value_or(true);
 	copyrightMark = config["copyright"].value_or(1);
 	hideLyrics = config["lyrics"].value_or(true);
-	rhythmLyrics = config["rhythmlyrics"].value_or(true);
+	hideRhythmLyrics = config["rhythmlyrics"].value_or(false);
 
     return true;
 }
