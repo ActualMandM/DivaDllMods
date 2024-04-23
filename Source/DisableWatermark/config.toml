@@ -10,4 +10,4 @@ author = "M&M"
 pv = true
 copyright = 1
 lyrics = true
-rhythmlyrics = true
+rhythmlyrics = false
