@@ -1,0 +1,13 @@
+enabled = true
+include = ["."]
+dll = ["DisableWatermark.dll"]
+
+name = "Disable Watermarks"
+version = "1.4.1"
+date = "14.04.2024"
+author = "M&M"
+
+pv = true
+copyright = 1
+lyrics = true
+rhythmlyrics = true

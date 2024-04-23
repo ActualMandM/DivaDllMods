@@ -1,0 +1,9 @@
+enabled = true
+include = ["."]
+dll = ["RestoreCutSongs.dll", "LeaderboardBlocker.dll"]
+
+name = "Restore Cut Songs"
+description = "Adds back the 3 songs that were cut from Mega Mix+: Hato (White Dove), Ievan Polkka, and saturation."
+version = "2.4.5"
+date = "17.01.2023"
+author = "M&M, swigz, Keikei14, Zolika1351"

@@ -1,0 +1,11 @@
+enabled = true
+dll = ["HighFrameRate.dll"]
+
+name = "High Frame Rate"
+description = "This mod allows the game to run at higher frame rates, alongside replacing the game's frame rate limiter with a more precise one."
+version = "1.4.7"
+date = "12.11.2023"
+author = "M&M, KingKrouch, Skyth, SonicFreak94, Zolika1351"
+
+vsync = true
+framerate = 0

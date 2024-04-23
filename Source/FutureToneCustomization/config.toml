@@ -1,0 +1,7 @@
+enabled = true
+dll = ["FutureToneCustomization.dll"]
+
+name = "Future Tone Customization"
+version = "1.2.0"
+date = "15.04.2023"
+author = "M&M, Skyth, testsnake"
