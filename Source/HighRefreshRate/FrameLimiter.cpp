@@ -7,7 +7,7 @@ using namespace std::chrono;
 using FrameRatio = duration<double, std::ratio<1, 60>>;
 
 static bool enable_frame_limit = true;
-static auto frame_start = system_clock::now();
+static auto frame_start = high_resolution_clock::now();
 static auto frame_ratio = FrameRatio(1);
 
 static duration<double, std::milli> present_time = {};
@@ -25,7 +25,7 @@ HOOK(void, __fastcall, _FrameLimiter, sigFrameLimiter())
 {
 	if (enable_frame_limit && present_time < frame_ratio)
 	{
-		auto now = system_clock::now();
+		auto now = high_resolution_clock::now();
 		const milliseconds delta = duration_cast<milliseconds>(now - frame_start);
 
 		if (delta < frame_ratio)
@@ -33,22 +33,22 @@ HOOK(void, __fastcall, _FrameLimiter, sigFrameLimiter())
 			// sleep for a portion of the frame time to free up cpu time
 			std::this_thread::sleep_for(frame_portion_ms - delta);
 
-			while ((now = system_clock::now()) - frame_start < frame_ratio)
+			while ((now = high_resolution_clock::now()) - frame_start < frame_ratio)
 			{
 				// spin for the remainder of the time
 			}
 		}
 	}
 
-	frame_start = system_clock::now();
+	frame_start = high_resolution_clock::now();
 }
 
 VTABLE_HOOK(HRESULT, WINAPI, IDXGISwapChain, Present, UINT SyncInterval, UINT Flags)
 {
 	// This is done to avoid vsync issues.
-	const auto start = system_clock::now();
+	const auto start = high_resolution_clock::now();
 	HRESULT result = originalIDXGISwapChainPresent(This, SyncInterval, Flags);
-	present_time = system_clock::now() - start;
+	present_time = high_resolution_clock::now() - start;
 	return result;
 }
 
