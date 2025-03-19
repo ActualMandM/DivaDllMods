@@ -2,7 +2,7 @@
 #include "FrameLimiter.h"
 
 bool* vsync;
-uint32_t* framerateCap;
+uint32_t* targetFPS;
 
 SIG_SCAN
 (
@@ -28,50 +28,25 @@ SIG_SCAN
 	"xxxxx????xxx????xxxxxxx????xxxxxxx?x????x????xx"
 );
 
+static void SetFramerate(uint32_t fps)
+{
+	*vsync = Config::vsync;
+	*targetFPS = fps;
+	FrameLimiter::SetTarget(*targetFPS);
+}
+
 HOOK(void, __fastcall, _SetFramerate, sigSetFramerate())
 {
-	*vsync = Config::enableVSync;
-
-	if (Config::affectMenus)
-	{
-		*framerateCap = Config::framerateCap;
-	}
-	else
-	{
-		*framerateCap = 60;
-	}
+	SetFramerate(60);
 }
 
 HOOK(void, __fastcall, _SetFramerateInGame, (char*)sigSetFramerateInGame() + 0xBE)
 {
-	*vsync = Config::enableVSync;
-	*framerateCap = Config::framerateCap;
+	SetFramerate(Config::fps);
 }
-
-uint32_t prevFramerateCap = 60;
 
 extern "C"
 {
-	__declspec(dllexport) void OnFrame()
-	{
-		if (!sigValid)
-			return;
-
-		if (Config::newLimiter && prevFramerateCap != *framerateCap)
-		{
-			if (*framerateCap == 0)
-			{
-				FrameLimiter::SetCap(60, false);
-			}
-			else
-			{
-				FrameLimiter::SetCap(*framerateCap, true);
-			}
-
-			prevFramerateCap = *framerateCap;
-		}
-	}
-
 	__declspec(dllexport) void Init()
 	{
 		if (!sigValid)
@@ -82,36 +57,27 @@ extern "C"
 
 		Config::Init();
 
-		// Grab the vsync and framerate cap addresses.
+		// Grab the VSync and target FPS addresses.
 		{
 			uint8_t* instrAddr = (uint8_t*)sigSetFramerate();
 			vsync = (bool*)(instrAddr + readUnalignedU32(instrAddr + 0x2) + 0x6);
 			instrAddr += 0x6;
-			framerateCap = (uint32_t*)(instrAddr + readUnalignedU32(instrAddr + 0x2) + 0xA);
+			targetFPS = (uint32_t*)(instrAddr + readUnalignedU32(instrAddr + 0x2) + 0xA);
 		}
 
 		printf("[%s] vsync: 0x%llx\n", MOD_NAME, vsync);
-		printf("[%s] framerateCap: 0x%llx\n", MOD_NAME, framerateCap);
+		printf("[%s] targetFPS: 0x%llx\n", MOD_NAME, targetFPS);
 
-		// Apply patches and install hooks.
-		if (Config::multiThreaded)
-		{
-			WRITE_MEMORY(sigSingleThreadedFlags(), uint8_t, 0x45, 0x31, 0xC9, 0x90);
-		}
+		// Disable D3D11's singlethreaded flag.
+		WRITE_MEMORY(sigSingleThreadedFlags(), uint8_t, 0x45, 0x31, 0xC9, 0x90);
 
 		// Disable 60hz limit and forced VSync when in fullscreen.
-		if (!Config::oldFullscreen)
-		{
-			WRITE_MEMORY((char*)sigSingleThreadedFlags() + 0x15, uint8_t, 0);
-			WRITE_MEMORY((char*)sigSingleThreadedFlags() + 0x1C, uint8_t, 0);
-		}
+		WRITE_MEMORY((char*)sigSingleThreadedFlags() + 0x15, uint8_t, 0);
+		WRITE_MEMORY((char*)sigSingleThreadedFlags() + 0x1C, uint8_t, 0);
 
 		INSTALL_HOOK(_SetFramerate);
 		INSTALL_HOOK(_SetFramerateInGame);
 
-		if (Config::newLimiter)
-		{
-			FrameLimiter::Init();
-		}
+		FrameLimiter::Init();
 	}
 }
