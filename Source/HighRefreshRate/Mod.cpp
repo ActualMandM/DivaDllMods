@@ -2,7 +2,7 @@
 #include "FrameLimiter.h"
 
 bool* vsync;
-uint32_t* targetFPS;
+int32_t* targetFPS;
 
 SIG_SCAN
 (
@@ -28,7 +28,7 @@ SIG_SCAN
 	"xxxxx????xxx????xxxxxxx????xxxxxxx?x????x????xx"
 );
 
-static void SetFramerate(uint32_t fps)
+static void SetFramerate(int32_t fps)
 {
 	*vsync = Config::vsync;
 	*targetFPS = fps;
@@ -62,7 +62,7 @@ extern "C"
 			uint8_t* instrAddr = (uint8_t*)sigSetFramerate();
 			vsync = (bool*)(instrAddr + readUnalignedU32(instrAddr + 0x2) + 0x6);
 			instrAddr += 0x6;
-			targetFPS = (uint32_t*)(instrAddr + readUnalignedU32(instrAddr + 0x2) + 0xA);
+			targetFPS = (int32_t*)(instrAddr + readUnalignedU32(instrAddr + 0x2) + 0xA);
 		}
 
 		printf("[%s] vsync: 0x%llx\n", MOD_NAME, vsync);

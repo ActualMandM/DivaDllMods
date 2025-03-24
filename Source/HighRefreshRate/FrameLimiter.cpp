@@ -1,6 +1,7 @@
 #include "FrameLimiter.h"
 
-static uint32_t targetFPS = 60;
+static int32_t targetFPS = 60;
+static int32_t currentHz = 60;
 
 SIG_SCAN
 (
@@ -19,9 +20,34 @@ HOOK(void, __fastcall, _FrameLimiter, sigFrameLimiter())
 	}
 }
 
-void FrameLimiter::SetTarget(uint32_t fps)
+extern "C"
 {
-	targetFPS = fps;
+	__declspec(dllexport) void OnFrame(IDXGISwapChain* swapChain)
+	{
+		if (!sigValid && Config::fps != 0)
+		{
+			return;
+		}
+
+		DXGI_SWAP_CHAIN_DESC swapChainDesc;
+		swapChain->GetDesc(&swapChainDesc);
+
+		HMONITOR monitor = MonitorFromWindow(swapChainDesc.OutputWindow, MONITOR_DEFAULTTONEAREST);
+		MONITORINFOEX monitorInfo = {};
+		monitorInfo.cbSize = sizeof(MONITORINFOEX);
+		GetMonitorInfoA(monitor, &monitorInfo);
+
+		DEVMODEA devMode = {};
+		devMode.dmSize = sizeof(DEVMODEA);
+		EnumDisplaySettingsA(monitorInfo.szDevice, ENUM_CURRENT_SETTINGS, &devMode);
+
+		currentHz = devMode.dmDisplayFrequency;
+	}
+}
+
+void FrameLimiter::SetTarget(int32_t fps)
+{
+	targetFPS = fps == 0 ? currentHz : fps;
 }
 
 void FrameLimiter::Init()

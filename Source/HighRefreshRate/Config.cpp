@@ -1,7 +1,7 @@
 ﻿#include "Config.h"
 
 bool Config::vsync;
-uint32_t Config::fps;
+int32_t Config::fps;
 
 bool Config::Init()
 {
