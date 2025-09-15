@@ -12,6 +12,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <string>
+#include <vector>
 
 // Dependencies
 #include <Helpers.h>

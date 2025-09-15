@@ -51,39 +51,206 @@ SIG_SCAN
 	"xxx????xxxxxx?x????xxxxxxxx"
 );
 
+SIG_SCAN
+(
+	sigGetSpriteInfo,
+	0x1405BC8F0,
+	"\x41\x56\x48\x83\xEC\x30\x48\x89\x5C\x24\x40\x48\x8D\x0D\xCC\xCC\xCC\xCC\x48\x89\x7C\x24\x28\x4C\x89\x7C\x24\x20\x4C",
+	"xxxxxxxxxxxxxx????xxxxxxxxxxx"
+);
+
+struct string_range
+{
+	char* start;
+	char* end;
+
+	string_range(char* str, size_t length)
+	{
+		start = str;
+		end = str + length;
+	}
+};
+
+struct SpriteInfo
+{
+	uint32_t id;
+	string_range name;
+	uint16_t index;
+	uint16_t setIndex;
+};
+
+struct ModuleData {
+	int id;
+	int sort_index;
+	int chara;
+	int cos;
+	INSERT_PADDING(0x5C);
+	uint32_t spr_set_id;
+	uint32_t unk_70;
+	uint32_t sprite_id;
+	uint32_t unk_78;
+	std::string name;
+	int shop_price;
+	uint64_t unk_A8;
+	uint64_t unk_B0;
+	int attributes;
+};
+
+struct CstmItemData {
+	int id;
+	int obj_id;
+	int sort_index;
+	std::string name;
+	int chara;
+	int parts;
+	uint32_t sprite_id;
+	bool unk_3C;
+	uint32_t unk_40;
+	void* unk_48;
+	void* unk_50;
+	uint32_t spr_set_id;
+	uint32_t bind_module;
+	bool unk_60;
+};
+
+FUNCTION_PTR(std::vector<ModuleData>*, __fastcall, GetModules, 0x140441B60);
+FUNCTION_PTR(std::vector<CstmItemData>*, __fastcall, GetCstmItems, 0x14031A000);
+FUNCTION_PTR(SpriteInfo*, __fastcall, GetSpriteInfo, sigGetSpriteInfo(), void* a1, string_range* name);
+
 bool prevVisualSetting = (bool)-1;
 
 HOOK(char, __fastcall, _CustomizationState, (char*)sigCustomizationState() - 0x3C, __int64 a1)
 {
 	bool curVisualSetting = (*songSelectAddr != 0) ? *(bool*)(*songSelectAddr + 0x27538) : *visualSetting;
 
-	if (prevVisualSetting != curVisualSetting)
+	if (curVisualSetting)
 	{
-		if (curVisualSetting)
-		{
-			WRITE_MEMORY((char*)sigCustomizationStyle() + 0x49, uint8_t, 0xB2, 0x01);
-			WRITE_MEMORY((char*)sigCustomizationStyle() + 0x55, uint8_t, 0x33, 0xD2);
-			WRITE_MEMORY((char*)sigCustomizationStyle() + 0x5C, uint8_t, 0xB2, 0x01);
+		WRITE_MEMORY((char*)sigCustomizationStyle() + 0x49, uint8_t, 0xB2, 0x01);
+		WRITE_MEMORY((char*)sigCustomizationStyle() + 0x55, uint8_t, 0x33, 0xD2);
+		WRITE_MEMORY((char*)sigCustomizationStyle() + 0x5C, uint8_t, 0xB2, 0x01);
 
-			WRITE_MEMORY((char*)sigNPRArchive() + 0x17A, int32_t, -1);
+		WRITE_MEMORY((char*)sigNPRArchive() + 0x17A, int32_t, -1);
 
-			WRITE_MEMORY(style, int32_t, -1);
+		WRITE_MEMORY(style, int32_t, -1);
+	}
+	else
+	{
+		WRITE_MEMORY((char*)sigCustomizationStyle() + 0x49, uint8_t, 0x33, 0xD2);
+		WRITE_MEMORY((char*)sigCustomizationStyle() + 0x55, uint8_t, 0xB2, 0x01);
+		WRITE_MEMORY((char*)sigCustomizationStyle() + 0x5C, uint8_t, 0x33, 0xD2);
+
+		WRITE_MEMORY((char*)sigNPRArchive() + 0x17A, int32_t, 0);
+
+		WRITE_MEMORY(style, int32_t, 0);
+	}
+
+	auto modules = GetModules();
+	char buf[64];
+	for (int i = 0; i < modules->size(); i++) {
+		size_t length;
+		if (curVisualSetting) length = sprintf_s(buf, "SPR_SEL_MD%03dCMN_MD_IMG", modules->at(i).id);
+		else length = sprintf_s(buf, "SPR_SEL_MD%03dCMN_MD_IMG_FT", modules->at(i).id);
+
+		auto name = string_range(buf, length);
+		auto spr = GetSpriteInfo(nullptr, &name);
+		if (spr->id != -1) {
+			modules->at(i).sprite_id = spr->id;
 		}
-		else
-		{
-			WRITE_MEMORY((char*)sigCustomizationStyle() + 0x49, uint8_t, 0x33, 0xD2);
-			WRITE_MEMORY((char*)sigCustomizationStyle() + 0x55, uint8_t, 0xB2, 0x01);
-			WRITE_MEMORY((char*)sigCustomizationStyle() + 0x5C, uint8_t, 0x33, 0xD2);
+	}
 
-			WRITE_MEMORY((char*)sigNPRArchive() + 0x17A, int32_t, 0);
+	auto cstm_items = GetCstmItems();
+	for (int i = 0; i < cstm_items->size(); i++) {
+		size_t length;
+		if (curVisualSetting) length = sprintf_s(buf, "SPR_CMNITM_THMB%03d_ITM_IMG", cstm_items->at(i).id);
+		else length = sprintf_s(buf, "SPR_CMNITM_THMB%03d_ITM_IMG_FT", cstm_items->at(i).id);
 
-			WRITE_MEMORY(style, int32_t, 0);
+		auto name = string_range(buf, length);
+		auto spr = GetSpriteInfo(nullptr, &name);
+		if (spr->id != -1) {
+			cstm_items->at(i).sprite_id = spr->id;
+		}
+	}
+
+	prevVisualSetting = curVisualSetting;
+	
+	return original_CustomizationState(a1);
+}
+
+HOOK(bool, __fastcall, PvSelCtrl, 0x1406EDC40, uint64_t a1) {
+	bool ret = originalPvSelCtrl(a1);
+
+	bool curVisualSetting = *(bool*)(a1 + 0x27538);
+	if (prevVisualSetting != curVisualSetting) {
+		int moduleCount = *(int*)(a1 + 0x3380 + 0x600);
+
+		auto modules = GetModules();
+		char buf[64];
+		size_t length;
+		for (int i = 0; i < modules->size(); i++) {
+			if (curVisualSetting) length = sprintf_s(buf, "SPR_SEL_MD%03dCMN_MD_IMG", modules->at(i).id);
+			else length = sprintf_s(buf, "SPR_SEL_MD%03dCMN_MD_IMG_FT", modules->at(i).id);
+
+			auto name = string_range(buf, length);
+			auto spr = GetSpriteInfo(nullptr, &name);
+			if (spr->id != -1) modules->at(i).sprite_id = spr->id;
+		}
+
+		auto pv_sel_modules = (ModuleData*)(a1 + 0x3380 + 0x608);
+		for (int i = 0; i < moduleCount; i++) {
+			if (curVisualSetting) length = sprintf_s(buf, "SPR_SEL_MD%03dCMN_MD_IMG", pv_sel_modules[i].id);
+			else length = sprintf_s(buf, "SPR_SEL_MD%03dCMN_MD_IMG_FT", pv_sel_modules[i].id);
+
+			auto name = string_range(buf, length);
+			auto spr = GetSpriteInfo(nullptr, &name);
+			if (spr->id != -1) pv_sel_modules[i].sprite_id = spr->id;
 		}
 
 		prevVisualSetting = curVisualSetting;
 	}
 
-	return original_CustomizationState(a1);
+	return ret;
+}
+
+HOOK(bool, __fastcall, PS4PvSelCtrl, 0x1402033C0, uint64_t a1) {
+	bool ret = originalPS4PvSelCtrl(a1);
+
+	bool curVisualSetting = (*songSelectAddr != 0) ? *(bool*)(*songSelectAddr + 0x27538) : *visualSetting;
+	if (prevVisualSetting != curVisualSetting) {
+		int moduleCount = *(int*)(a1 + 0x55E8 + 0x2240);
+
+		auto modules = GetModules();
+		char buf[64];
+		size_t length;
+		for (int i = 0; i < modules->size(); i++) {
+			if (curVisualSetting) length = sprintf_s(buf, "SPR_SEL_MD%03dCMN_MD_IMG", modules->at(i).id);
+			else length = sprintf_s(buf, "SPR_SEL_MD%03dCMN_MD_IMG_FT", modules->at(i).id);
+
+			auto name = string_range(buf, length);
+			auto spr = GetSpriteInfo(nullptr, &name);
+			if (spr->id != -1) modules->at(i).sprite_id = spr->id;
+		}
+
+		auto pv_sel_modules = (ModuleData*)(a1 + 0x36A68);
+		for (int i = 0; i < moduleCount; i++) {
+			if (curVisualSetting) length = sprintf_s(buf, "SPR_SEL_MD%03dCMN_MD_IMG", pv_sel_modules[i].id);
+			else length = sprintf_s(buf, "SPR_SEL_MD%03dCMN_MD_IMG_FT", pv_sel_modules[i].id);
+
+			auto name = string_range(buf, length);
+			auto spr = GetSpriteInfo(nullptr, &name);
+			if (spr->id != -1) pv_sel_modules[i].sprite_id = spr->id;
+		}
+
+		prevVisualSetting = curVisualSetting;
+	}
+
+	return ret;
+}
+
+HOOK(void, __fastcall, LoadDecorationStamps, 0x1401FCB60) {
+	if (prevVisualSetting) WRITE_MEMORY(0x140C855B8, char, "rom/photo_print/stamp/module/stamp_md_sub_%03d_00.tga");
+	else WRITE_MEMORY(0x140C855B8, char, "rom/photo_print/stamp/module/stamp_md_sub_%03d_01.tga");
+
+	return originalLoadDecorationStamps();
 }
 
 extern "C" __declspec(dllexport) void Init()
@@ -116,4 +283,7 @@ extern "C" __declspec(dllexport) void Init()
 	}
 
 	INSTALL_HOOK(_CustomizationState);
+	INSTALL_HOOK(PvSelCtrl);
+	INSTALL_HOOK(PS4PvSelCtrl);
+	INSTALL_HOOK(LoadDecorationStamps);
 }
