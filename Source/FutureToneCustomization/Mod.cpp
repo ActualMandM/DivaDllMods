@@ -59,6 +59,54 @@ SIG_SCAN
 	"xxxxxxxxxxxxxx????xxxxxxxxxxx"
 );
 
+SIG_SCAN
+(
+	sigGetModules,
+	0x1401C9D13,
+	"\xE8\xCC\xCC\xCC\xCC\x4C\x8B\xD0\x4C\x8B\x08",
+	"x????xxxxxx"
+);
+
+SIG_SCAN
+(
+	sigGetCstmItems,
+	0x014034DA87,
+	"\xE8\xCC\xCC\xCC\xCC\x4C\x63\x57\x10",
+	"x????xxxx"
+);
+
+SIG_SCAN
+(
+	sigPvSelCtrl,
+	0x1406EDC40,
+	"\x40\x55\x57\x41\x57\x48\x81",
+	"xxxxxxx"
+);
+
+SIG_SCAN
+(
+	sigPS4PvSelCtrl,
+	0x1402033C0,
+	"\x48\x8B\xC4\x48\x89\x58\x10\x48\x89\x70\x18\x48\x89\x78\x20\x55\x41\x54\x41\x55\x41\x56\x41\x57\x48\x8D\xA8\x48\xFF\xFF\xFF\x48\x81\xEC\x90\x01\x00\x00\x0F\x29\x70\xC8\x0F",
+	"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+);
+
+SIG_SCAN
+(
+	sigLoadDecorationStamps,
+	0x1401FCB60,
+	"\x48\x89\x5C\x24\x08\x48\x89\x74\x24\x10\x48\x89\x7C\x24\x18\x55\x41\x54\x41\x55\x41\x56\x41\x57\x48\x8D\xAC\x24\x30\xFF",
+	"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+);
+
+SIG_SCAN
+(
+	sigDecorationStampFile,
+	0x140C855B8, 
+	"rom/photo_print/stamp/module/stamp_md_sub_%03d_00.tga\0",
+	"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+);
+
 struct string_range
 {
 	char* start;
@@ -113,8 +161,8 @@ struct CstmItemData {
 	bool unk_60;
 };
 
-FUNCTION_PTR(std::vector<ModuleData>*, __fastcall, GetModules, 0x140441B60);
-FUNCTION_PTR(std::vector<CstmItemData>*, __fastcall, GetCstmItems, 0x14031A000);
+FUNCTION_PTR(std::vector<ModuleData>*, __fastcall, GetModules, nullptr);
+FUNCTION_PTR(std::vector<CstmItemData>*, __fastcall, GetCstmItems, nullptr);
 FUNCTION_PTR(SpriteInfo*, __fastcall, GetSpriteInfo, sigGetSpriteInfo(), void* a1, string_range* name);
 
 bool prevVisualSetting = (bool)-1;
@@ -176,7 +224,7 @@ HOOK(char, __fastcall, _CustomizationState, (char*)sigCustomizationState() - 0x3
 	return original_CustomizationState(a1);
 }
 
-HOOK(bool, __fastcall, PvSelCtrl, 0x1406EDC40, uint64_t a1) {
+HOOK(bool, __fastcall, PvSelCtrl, sigPvSelCtrl(), uint64_t a1) {
 	bool ret = originalPvSelCtrl(a1);
 
 	bool curVisualSetting = *(bool*)(a1 + 0x27538);
@@ -211,7 +259,7 @@ HOOK(bool, __fastcall, PvSelCtrl, 0x1406EDC40, uint64_t a1) {
 	return ret;
 }
 
-HOOK(bool, __fastcall, PS4PvSelCtrl, 0x1402033C0, uint64_t a1) {
+HOOK(bool, __fastcall, PS4PvSelCtrl, sigPS4PvSelCtrl(), uint64_t a1) {
 	bool ret = originalPS4PvSelCtrl(a1);
 
 	bool curVisualSetting = (*songSelectAddr != 0) ? *(bool*)(*songSelectAddr + 0x27538) : *visualSetting;
@@ -246,9 +294,9 @@ HOOK(bool, __fastcall, PS4PvSelCtrl, 0x1402033C0, uint64_t a1) {
 	return ret;
 }
 
-HOOK(void, __fastcall, LoadDecorationStamps, 0x1401FCB60) {
-	if (prevVisualSetting) WRITE_MEMORY(0x140C855B8, char, "rom/photo_print/stamp/module/stamp_md_sub_%03d_00.tga");
-	else WRITE_MEMORY(0x140C855B8, char, "rom/photo_print/stamp/module/stamp_md_sub_%03d_01.tga");
+HOOK(void, __fastcall, LoadDecorationStamps, sigLoadDecorationStamps()) {
+	if (prevVisualSetting) WRITE_MEMORY(sigDecorationStampFile(), char, "rom/photo_print/stamp/module/stamp_md_sub_%03d_00.tga");
+	else WRITE_MEMORY(sigDecorationStampFile(), char, "rom/photo_print/stamp/module/stamp_md_sub_%03d_01.tga");
 
 	return originalLoadDecorationStamps();
 }
@@ -280,6 +328,18 @@ extern "C" __declspec(dllexport) void Init()
 		style = (int32_t*)(instrAddr + readUnalignedU32(instrAddr + 0x3) + 0x7);
 		style -= 0x2;
 		printf("[%s] style: 0x%llx\n", MOD_NAME, style);
+	}
+
+	{
+		uint8_t* instrAddr = (uint8_t*)sigGetModules();
+		GetModules = (std::vector<ModuleData>*(__fastcall*)())(instrAddr + readUnalignedU32(instrAddr + 0x1) + 0x5);
+		printf("[%s] GetModules: 0x%llx\n", MOD_NAME, (void*)GetModules);
+	}
+
+	{
+		uint8_t* instrAddr = (uint8_t*)sigGetCstmItems();
+		GetCstmItems = (std::vector<CstmItemData>*(__fastcall*)())(instrAddr + (int32_t)readUnalignedU32(instrAddr + 0x1) + 0x5);
+		printf("[%s] GetCstmItems: 0x%llx\n", MOD_NAME, (void*)GetCstmItems);
 	}
 
 	INSTALL_HOOK(_CustomizationState);
