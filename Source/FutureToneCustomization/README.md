@@ -7,3 +7,4 @@ Code for a Mega Mix+ mod that allows the Customization menu and module sprites t
  - [Skyth](https://github.com/blueskythlikesclouds) for the initial code.
  - [testsnake](https://github.com/testsnake) for figuring out how to get the value from the option in song select.
  - [Vixen](https://github.com/vixen256) for implementing Future Tone styled sprites.
+ - [lavverso](https://github.com/lavencoder) for setting the Future Tone sprites files up.
